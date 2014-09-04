@@ -1,29 +1,29 @@
 ; hello-os
 ; TAB=4
 
-; Stand FAT12 format floppy code ?yFAT12ŠiŽ®???—p‘ã?
+; æ ‡å‡†FAT12æ ¼å¼è½¯ç›˜ä¸“ç”¨çš„ä»£ç  Stand FAT12 format floppy code
 
 		DB		0xeb, 0x4e, 0x90
-		DB		"HELLOIPL"		; ƒu[ƒgƒZƒNƒ^‚Ì–¼‘O‚ðŽ©—R‚É‘‚¢‚Ä‚æ‚¢i8ƒoƒCƒgj
-		DW		512				; 1ƒZƒNƒ^‚Ì‘å‚«‚³i512‚É‚µ‚È‚¯‚ê‚Î‚¢‚¯‚È‚¢j
-		DB		1				; ƒNƒ‰ƒXƒ^‚Ì‘å‚«‚³i1ƒZƒNƒ^‚É‚µ‚È‚¯‚ê‚Î‚¢‚¯‚È‚¢j
-		DW		1				; FAT‚ª‚Ç‚±‚©‚çŽn‚Ü‚é‚©i•’Ê‚Í1ƒZƒNƒ^–Ú‚©‚ç‚É‚·‚éj
-		DB		2				; FAT‚ÌŒÂ”i2‚É‚µ‚È‚¯‚ê‚Î‚¢‚¯‚È‚¢j
-		DW		224				; ƒ‹[ƒgƒfƒBƒŒƒNƒgƒŠ—Ìˆæ‚Ì‘å‚«‚³i•’Ê‚Í224ƒGƒ“ƒgƒŠ‚É‚·‚éj
-		DW		2880			; ‚±‚Ìƒhƒ‰ƒCƒu‚Ì‘å‚«‚³i2880ƒZƒNƒ^‚É‚µ‚È‚¯‚ê‚Î‚¢‚¯‚È‚¢j
-		DB		0xf0			; ƒƒfƒBƒA‚Ìƒ^ƒCƒvi0xf0‚É‚µ‚È‚¯‚ê‚Î‚¢‚¯‚È‚¢j
-		DW		9				; FAT—Ìˆæ‚Ì’·‚³i9ƒZƒNƒ^‚É‚µ‚È‚¯‚ê‚Î‚¢‚¯‚È‚¢j
-		DW		18				; 1ƒgƒ‰ƒbƒN‚É‚¢‚­‚Â‚ÌƒZƒNƒ^‚ª‚ ‚é‚©i18‚É‚µ‚È‚¯‚ê‚Î‚¢‚¯‚È‚¢j
-		DW		2				; ƒwƒbƒh‚Ì”i2‚É‚µ‚È‚¯‚ê‚Î‚¢‚¯‚È‚¢j
-		DD		0				; ƒp[ƒeƒBƒVƒ‡ƒ“‚ðŽg‚Á‚Ä‚È‚¢‚Ì‚Å‚±‚±‚Í•K‚¸0
-		DD		2880			; ‚±‚Ìƒhƒ‰ƒCƒu‘å‚«‚³‚ð‚à‚¤ˆê“x‘‚­
-		DB		0,0,0x29		; ‚æ‚­‚í‚©‚ç‚È‚¢‚¯‚Ç‚±‚Ì’l‚É‚µ‚Ä‚¨‚­‚Æ‚¢‚¢‚ç‚µ‚¢
-		DD		0xffffffff		; ‚½‚Ô‚ñƒ{ƒŠƒ…[ƒ€ƒVƒŠƒAƒ‹”Ô†
-		DB		"HELLO-OS   "	; ƒfƒBƒXƒN‚Ì–¼‘Oi11ƒoƒCƒgj
-		DB		"FAT12   "		; ƒtƒH[ƒ}ƒbƒg‚Ì–¼‘Oi8ƒoƒCƒgj
-		RESB	18				; ‚Æ‚è‚ ‚¦‚¸18ƒoƒCƒg‚ ‚¯‚Ä‚¨‚­
+		DB		"HELLOIPL"		; å¯åŠ¨æ‰‡åŒºåç§°ï¼ˆ8å­—èŠ‚ï¼‰
+		DW		512				; æ¯ä¸ªæ‰‡åŒºï¼ˆsectorï¼‰å¤§å°ï¼ˆå¿…é¡»512å­—èŠ‚ï¼‰
+		DB		1				; ç°‡ï¼ˆclusterï¼‰å¤§å°ï¼ˆå¿…é¡»ä¸º1ä¸ªæ‰‡åŒºï¼‰
+		DW		1				; FATèµ·å§‹ä½ç½®ï¼ˆä¸€èˆ¬ä¸ºç¬¬ä¸€ä¸ªæ‰‡åŒºï¼‰
+		DB		2				; FATä¸ªæ•°ï¼ˆå¿…é¡»ä¸º2ï¼‰
+		DW		224				; æ ¹ç›®å½•å¤§å°ï¼ˆä¸€èˆ¬ä¸º224é¡¹ï¼‰
+		DW		2880			; è¯¥ç£ç›˜å¤§å°ï¼ˆå¿…é¡»ä¸º2880æ‰‡åŒº1440*1024/512ï¼‰
+		DB		0xf0			; ç£ç›˜ç±»åž‹ï¼ˆå¿…é¡»ä¸º0xf0ï¼‰
+		DW		9				; FATçš„é•¿åº¦ï¼ˆå¿…??9æ‰‡åŒºï¼‰
+		DW		18				; ä¸€ä¸ªç£é“ï¼ˆtrackï¼‰æœ‰å‡ ä¸ªæ‰‡åŒºï¼ˆå¿…é¡»ä¸º18ï¼‰
+		DW		2				; ç£å¤´æ•°ï¼ˆå¿…??2ï¼‰
+		DD		0				; ä¸ä½¿ç”¨åˆ†åŒºï¼Œå¿…é¡»æ˜¯0
+		DD		2880			; é‡å†™ä¸€æ¬¡ç£ç›˜å¤§å°
+		DB		0,0,0x29		; æ„ä¹‰ä¸æ˜Žï¼ˆå›ºå®šï¼‰
+		DD		0xffffffff		; ï¼ˆå¯èƒ½æ˜¯ï¼‰å·æ ‡å·ç 
+		DB		"HELLO-OS   "	; ç£ç›˜çš„åç§°ï¼ˆå¿…é¡»ä¸º11å­—?ï¼Œä¸è¶³å¡«ç©ºæ ¼ï¼‰
+		DB		"FAT12   "		; ç£ç›˜æ ¼å¼åç§°ï¼ˆå¿…??8å­—?ï¼Œä¸è¶³å¡«ç©ºæ ¼ï¼‰
+		RESB	18				; å…ˆç©ºå‡º18å­—èŠ‚
 
-; ƒvƒƒOƒ‰ƒ€–{‘Ì
+; ç¨‹åºä¸»ä½“
 
 		DB		0xb8, 0x00, 0x00, 0x8e, 0xd0, 0xbc, 0x00, 0x7c
 		DB		0x8e, 0xd8, 0x8e, 0xc0, 0xbe, 0x74, 0x7c, 0x8a
@@ -31,18 +31,18 @@
 		DB		0xb4, 0x0e, 0xbb, 0x0f, 0x00, 0xcd, 0x10, 0xeb
 		DB		0xee, 0xf4, 0xeb, 0xfd
 
-; ƒƒbƒZ[ƒW•”•ª
+; ä¿¡æ¯æ˜¾ç¤ºéƒ¨åˆ†
 
-		DB		0x0a, 0x0a		; ‰üs‚ð2‚Â
+		DB		0x0a, 0x0a		; ?ä¸ª?è¡Œ
 		DB		"hello, world"
-		DB		0x0a			; ‰üs
+		DB		0x0a			; ?è¡Œ
 		DB		0
 
-		RESB	0x1fe-$			; 0x001fe‚Ü‚Å‚ð0x00‚Å–„‚ß‚é–½—ß
+		RESB	0x1fe-$			; å¡«å†™0x00ç›´åˆ°0x001fe
 
 		DB		0x55, 0xaa
 
-; ˆÈ‰º‚Íƒu[ƒgƒZƒNƒ^ˆÈŠO‚Ì•”•ª‚Ì‹Lq
+; å¯åŠ¨æ‰‡åŒºä»¥å¤–éƒ¨åˆ†è¾“å‡º
 
 		DB		0xf0, 0xff, 0xff, 0x00, 0x00, 0x00, 0x00, 0x00
 		RESB	4600
