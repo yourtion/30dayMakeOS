@@ -1,0 +1,20 @@
+format:
+	/* このセクションでリンクの方針を記述 */
+	code(align:1, logic:0x48,      file:0x48);
+	data(align:4, logic:stack_end, file:code_end);
+
+file:
+	/* このセクションでコマンドラインに書ききれなかった
+		.objファイル、.libファイルを記載 */
+	/* なお、このセクションはフルパスで書いてもよい。 */
+	/* 例：  c:/osask/gg00libc.lib;  */
+	../z_tools/guigui00/gg00libc.lib;
+	../z_tools/guigui00/golibc.lib;
+
+label:
+	/* 必ずリンクしなければいけないラベルを指定 */
+	/* エントリポイントを指定すればいいと思ってください */
+	_main;
+
+
+	/* 上記3セクションの順序は入れ替えてはいけません! */

@@ -1,0 +1,89 @@
+TOOLPATH = ../z_tools/
+RULEFILE = ../z_tools/guigui00/guigui00.rul
+MAKE     = $(TOOLPATH)make.exe -r
+SJISCONV = $(TOOLPATH)sjisconv.exe -s
+CC1      = $(TOOLPATH)cc1.exe -I$(INCPATH) $(CC1OPT) -Os -Wall -quiet
+GAS2NASK = $(TOOLPATH)gas2nask.exe -a
+NASK     = $(TOOLPATH)nask.exe
+OBJ2BIM  = $(TOOLPATH)obj2bim.exe
+BIM2BIN  = $(TOOLPATH)bim2bin.exe
+CPP0     = $(TOOLPATH)cpp0.exe -P -I$(INCPATH)
+ASKA     = $(TOOLPATH)aska.exe
+NASKCNV  = $(TOOLPATH)naskcnv0.exe -l -s -w
+GOLIB    = $(TOOLPATH)golib00.exe
+LINK     = $(TOOLPATH)ld.exe -s -Bdynamic --stack $(STACKSIZE)
+EDIMG    = $(TOOLPATH)edimg.exe
+SARTOL   = $(TOOLPATH)sartol.exe
+DELE     = del
+COPY     = copy
+
+LIBPATH  = $(INCPATH)
+LIBS     = $(LIBPATH)w32clibc.lib $(LIBPATH)golibc.lib $(LIBPATH)libmingw.lib
+
+# 以上の項目はあなたのディレクトリ構成にあわせて書き換える
+
+ALL:
+	$(MAKE) $(TARGET).$(MODE)
+
+%.ca : %.c Makefile
+	$(SJISCONV) $*.c $*.ca
+
+%.gas : %.ca Makefile
+	$(CC1) -o $*.gas $*.ca
+
+%.nas : %.gas Makefile
+	$(GAS2NASK) $*.gas $*.nas
+
+%.obj : %.nas Makefile
+	$(NASK) $*.nas $*.obj
+
+%.ias : %.ask Makefile
+	$(CPP0) -o $*.ias $*.ask
+
+%.3as : %.ias Makefile
+	$(ASKA) $*.ias $*.3as
+
+%.nas : %.3as Makefile
+	$(NASKCNV) $*.3as $*.nas
+
+%.lst : %.nas Makefile
+	$(NASK) $*.nas $*.obj $*.lst
+
+$(TARGET).bim : $(OBJS) Makefile
+	$(OBJ2BIM) @$(RULEFILE) out:$(TARGET).bim stack:$(STACKSIZE) map:$(TARGET).map $(OBJS)
+
+%.bin : %.bim Makefile
+	$(BIM2BIN) in:$*.bim out:$*.org malloc:$(MALLOCSIZE) mmarea:$(MMAREA) $(BIMOPT0)
+	$(BIM2BIN) -osacmp in:$*.org out:$*.bin $(BIMOPT1)
+
+$(TARGET).lib : $(OBJS) Makefile
+	$(GOLIB) out:$@ $(OBJS)
+
+$(TARGET).dll : $(TARGET).bim Makefile
+	$(OBJ2BIM) @$(RULEFILE) out:$(TARGET).bim map:$(TARGET).map $(OBJS)
+	$(BIM2BIN) -osacmp -tek1 in:$(TARGET).bim out:$(TARGET).dll
+
+$(TARGET).exe : $(OBJS) Makefile
+	$(LINK) -o $(TARGET).exe -Map $(TARGET).map $(OBJS) $(LIBS)
+
+clean :
+	-$(DELE) *.obj
+	-$(DELE) $(TARGET).bim
+	-$(DELE) $(TARGET).map
+	-$(DELE) $(TARGET).org
+
+run :
+	$(MAKE) $(TARGET).$(MODE)
+	$(COPY) $(TARGET).$(MODE) ..\z_tools\!built.bin
+	$(MAKE) -C $(TOOLPATH)osa_qemu
+	$(EDIMG) @$(TOOLPATH)edimgopt.txt $(EDIMGOPT) imgout:../z_tools/qemu/fdimage0.bin
+	$(MAKE) -C $(TOOLPATH)qemu
+
+arc :
+	$(MAKE) $(TARGET).$(MODE)
+	$(SARTOL) e $(ARCORG) . @-4k ARCINFO0.TXT $(ARCFLIES)
+	$(BIM2BIN) -osacmp in:$(ARCORG) out:$(ARCTEK) $(BIMOPT2)
+
+src_only :
+	$(MAKE) clean
+	-$(DELE) $(TARGET).$(MODE)

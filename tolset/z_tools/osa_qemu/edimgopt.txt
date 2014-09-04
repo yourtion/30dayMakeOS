@@ -1,0 +1,4 @@
+opt imgin:OSAIMGAT.BIN
+ovrcopy from:osask_qe.sys to:@:OSASK.SYS
+copy from:OSASK0.PSF to:@:
+opt imgout:osaimgqe.bin

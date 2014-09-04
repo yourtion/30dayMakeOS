@@ -1,0 +1,2 @@
+default :
+	qemu-win.bat
