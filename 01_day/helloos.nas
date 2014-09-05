@@ -33,9 +33,9 @@
 
 ; 信息显示部分
 
-		DB		0x0a, 0x0a		; ?个?行
+		DB		0x0a, 0x0a		; 换行两次
 		DB		"hello, world"
-		DB		0x0a			; ?行
+		DB		0x0a			; 换行
 		DB		0
 
 		RESB	0x1fe-$			; 填写0x00直到0x001fe
