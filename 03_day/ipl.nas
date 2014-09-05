@@ -34,7 +34,7 @@ entry:
 		MOV		SP,0x7c00
 		MOV		DS,AX
 
-; ディスクを読む
+; 读取磁盘
 
 		MOV		AX,0x0820
 		MOV		ES,AX
@@ -42,7 +42,9 @@ entry:
 		MOV		DH,0			; 磁头0
 		MOV		CL,2			; 扇区2
 
+readloop:
 		MOV		SI,0			; 记录失败次数寄存器
+		
 retry:
 		MOV		AH,0x02			; AH=0x02 : 读入磁盘
 		MOV		AL,1			; 1个扇区
@@ -57,6 +59,13 @@ retry:
 		MOV		DL,0x00			; A驱动器
 		INT		0x13			; 重置驱动器
 		JMP		retry
+next:
+		MOV		AX,ES			; 把内存地址后移0x200（512/16十六进制转换）
+		ADD		AX,0x0020
+		MOV		ES,AX			; ADD ES,0x020因为没有ADD ES，只能通过AX进行
+		ADD		CL,1			; 往CL里面加1
+		CMP		CL,18			; 比较CL与18
+		JBE		readloop		; CL <= 18 跳转到readloop
 
 ; 读取完毕，无其他指令进入休眠
 
