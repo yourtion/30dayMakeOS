@@ -1,6 +1,8 @@
 ; haribote-ipl
 ; TAB=4
 
+CYLS	EQU		10				; 声明CYLS=10
+
 		ORG		0x7c00			; 指明程序装载地址
 
 ; 标准FAT12格式软盘专用的代码 Stand FAT12 format floppy code
@@ -44,7 +46,7 @@ entry:
 
 readloop:
 		MOV		SI,0			; 记录失败次数寄存器
-		
+
 retry:
 		MOV		AH,0x02			; AH=0x02 : 读入磁盘
 		MOV		AL,1			; 1个扇区
@@ -66,6 +68,14 @@ next:
 		ADD		CL,1			; 往CL里面加1
 		CMP		CL,18			; 比较CL与18
 		JBE		readloop		; CL <= 18 跳转到readloop
+		MOV		CL,1
+		ADD		DH,1
+		CMP		DH,2
+		JB		readloop		; DH < 2 跳转到readloop
+		MOV		DH,0
+		ADD		CH,1
+		CMP		CH,CYLS
+		JB		readloop		; CH < CYLS 跳转到readloop
 
 ; 读取完毕，无其他指令进入休眠
 
