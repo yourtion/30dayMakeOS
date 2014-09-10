@@ -1,12 +1,14 @@
 void io_hlt(void);
-void write_mem8(int addr, int data);
 
 void HariMain(void)
 {
-	int i; /* 声明变量，i是32位整数 */
+	int i; /* 声明变量i，i是32位整数 */
+	char *p; /* 声明变量p、用于BYTE [...]地址 */
 
 	for (i = 0xa0000; i <= 0xaffff; i++) {
-		write_mem8(i, i & 0x0f);
+		p = (char *)i;
+		*p = i & 0x0f;
+		/* 替代write_mem8(i, i & 0x0f); */
 	}
 
 	for (;;) {
