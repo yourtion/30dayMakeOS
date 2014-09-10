@@ -4,20 +4,39 @@ void io_out8(int port, int data);
 int io_load_eflags(void);
 void io_store_eflags(int eflags);
 
-/* 在同一个源文件中，如果想在声明前使用，需要先声明 */
+void init_palette(void);
+void set_palette(int start, int end, unsigned char *rgb);
+void boxfill8(unsigned char *vram, int xsize, unsigned char c, int x0, int y0, int x1, int y1);
+
+#define COL8_000000		0
+#define COL8_FF0000		1
+#define COL8_00FF00		2
+#define COL8_FFFF00		3
+#define COL8_0000FF		4
+#define COL8_FF00FF		5
+#define COL8_00FFFF		6
+#define COL8_FFFFFF		7
+#define COL8_C6C6C6		8
+#define COL8_840000		9
+#define COL8_008400		10
+#define COL8_848400		11
+#define COL8_000084		12
+#define COL8_840084		13
+#define COL8_008484		14
+#define COL8_848484		15
 
 void HariMain(void)
 {
-	int i; /* 声明变量i，i是32位整数 */
 	char *p; /* 声明变量p、用于BYTE [...]地址 */
 
 	init_palette(); /* 设定调色板 */
 
 	p = (char *) 0xa0000; /* 地址变量赋值 */
-
-	for (i = 0; i <= 0xffff; i++) {
-		p[i] = i & 0x0f;
-	}
+	
+	/* 根据 0xa0000 + x + y * 320 计算坐标 8*/
+	boxfill8(p, 320, COL8_FF0000,  20,  20, 120, 120);
+	boxfill8(p, 320, COL8_00FF00,  70,  50, 170, 150);
+	boxfill8(p, 320, COL8_0000FF, 120,  80, 220, 180);
 
 	for (;;) {
 		io_hlt();
@@ -63,5 +82,15 @@ void set_palette(int start, int end, unsigned char *rgb)
 		rgb += 3;
 	}
 	io_store_eflags(eflags);	/* 复原中断许可标志 */
+	return;
+}
+
+void boxfill8(unsigned char *vram, int xsize, unsigned char c, int x0, int y0, int x1, int y1)
+{
+	int x, y;
+	for (y = y0; y <= y1; y++) {
+		for (x = x0; x <= x1; x++)
+			vram[y * xsize + x] = c;
+	}
 	return;
 }
