@@ -36,10 +36,12 @@ struct BOOTINFO {
 void HariMain(void)
 {
 	struct BOOTINFO *binfo = (struct BOOTINFO *) 0x0ff0;
-	extern char hankaku[4096];
+	extern char hankaku[4096];/* DB各种数据（共4096字节） */
 
 	init_palette();
 	init_screen(binfo->vram, binfo->scrnx, binfo->scrny);
+	
+	/* A的字符编码是0x41，所以A的字体数据，放在自“hankaku+0x41*16”开始的16字节里 */
 	putfont8(binfo->vram, binfo->scrnx,  8, 8, COL8_FFFFFF, hankaku + 'A' * 16);
 	putfont8(binfo->vram, binfo->scrnx, 16, 8, COL8_FFFFFF, hankaku + 'B' * 16);
 	putfont8(binfo->vram, binfo->scrnx, 24, 8, COL8_FFFFFF, hankaku + 'C' * 16);
