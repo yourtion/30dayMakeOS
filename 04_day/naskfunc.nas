@@ -1,10 +1,10 @@
 ; naskfunc
 ; TAB=4
 
-[FORMAT "WCOFF"]				; ƒIƒuƒWƒFƒNƒgƒtƒ@ƒCƒ‹‚ðì‚éƒ‚[ƒh	
-[INSTRSET "i486p"]				; 486‚Ì–½—ß‚Ü‚ÅŽg‚¢‚½‚¢‚Æ‚¢‚¤‹Lq
-[BITS 32]						; 32ƒrƒbƒgƒ‚[ƒh—p‚Ì‹@ŠBŒê‚ðì‚ç‚¹‚é
-[FILE "naskfunc.nas"]			; ƒ\[ƒXƒtƒ@ƒCƒ‹–¼î•ñ
+[FORMAT "WCOFF"]				; åˆ¶ä½œç›®æ ‡æ–‡ä»¶çš„æ¨¡å¼	
+[INSTRSET "i486p"]				; åˆ¶å®šä½¿ç”¨486ç¼–è¯‘
+[BITS 32]						; 3åˆ¶ä½œ32ä½æ¨¡å¼ç”¨çš„æœºå™¨è¯­è¨€
+[FILE "naskfunc.nas"]			; æ–‡ä»¶å
 
 		GLOBAL	_io_hlt,_write_mem8
 
@@ -15,7 +15,7 @@ _io_hlt:	; void io_hlt(void);
 		RET
 
 _write_mem8:	; void write_mem8(int addr, int data);
-		MOV		ECX,[ESP+4]		; [ESP+4]‚Éaddr‚ª“ü‚Á‚Ä‚¢‚é‚Ì‚Å‚»‚ê‚ðECX‚É“Ç‚Ýž‚Þ
-		MOV		AL,[ESP+8]		; [ESP+8]‚Édata‚ª“ü‚Á‚Ä‚¢‚é‚Ì‚Å‚»‚ê‚ðAL‚É“Ç‚Ýž‚Þ
+		MOV		ECX,[ESP+4]		; [ESP+4]ä¸­å­˜æ”¾çš„æ˜¯åœ°å€ï¼Œå°†å…¶è¯»å…¥ECX
+		MOV		AL,[ESP+8]		; [ESP+8]ä¸­å­˜æ”¾çš„æ˜¯æ•°æ®ï¼Œå°†å…¶è¯»å…¥AL
 		MOV		[ECX],AL
 		RET

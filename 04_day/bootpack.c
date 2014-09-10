@@ -3,7 +3,7 @@ void write_mem8(int addr, int data);
 
 void HariMain(void)
 {
-	int i; /* 変数宣言。iという変数は、32ビットの整数型 */
+	int i; /* 螢ｰ譏主序驥擾ｼ景譏ｯ32菴肴紛謨ｰ */
 
 	for (i = 0xa0000; i <= 0xaffff; i++) {
 		write_mem8(i, 15); /* MOV BYTE [i],15 */
