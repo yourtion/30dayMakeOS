@@ -9,7 +9,7 @@ CYLS	EQU		10				; 声明CYLS=10
 
 		JMP		entry
 		DB		0x90
-		DB		"HELLOIPL"		; 启动扇区名称（8字节）
+		DB		"HARIBOTE"		; 启动扇区名称（8字节）
 		DW		512				; 每个扇区（sector）大小（必须512字节）
 		DB		1				; 簇（cluster）大小（必须为1个扇区）
 		DW		1				; FAT起始位置（一般为第一个扇区）
