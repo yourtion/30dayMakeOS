@@ -10,6 +10,8 @@ void HariMain(void)
 	int mx, my;
 
 	init_gdtidt();
+	init_pic();
+	
 	init_palette();
 	init_screen8(binfo->vram, binfo->scrnx, binfo->scrny);
 	mx = (binfo->scrnx - 16) / 2; /* 计算画面的中心坐标*/
