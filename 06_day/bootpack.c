@@ -1,4 +1,4 @@
-/* bootpack‚ÌƒƒCƒ“ */
+/* bootpack */
 
 #include <stdio.h>
 
@@ -68,7 +68,8 @@ void HariMain(void)
 	init_gdtidt();
 	init_palette();
 	init_screen8(binfo->vram, binfo->scrnx, binfo->scrny);
-	mx = (binfo->scrnx - 16) / 2; /* ‰æ–Ê’†‰›‚É‚È‚é‚æ‚¤‚ÉÀ•WŒvZ */
+	
+	mx = (binfo->scrnx - 16) / 2; /* è®¡ç®—ç”»é¢çš„ä¸­å¿ƒåæ ‡*/
 	my = (binfo->scrny - 28 - 16) / 2;
 	init_mouse_cursor8(mcursor, COL8_008484);
 	putblock8_8(binfo->vram, binfo->scrnx, 16, 16, mx, my, mcursor, 16);
