@@ -12,11 +12,15 @@ struct BOOTINFO { /* 0x0ff0-0x0fff */
 /* naskfunc.nas */
 void io_hlt(void);
 void io_cli(void);
+void io_sti(void);
 void io_out8(int port, int data);
 int io_load_eflags(void);
 void io_store_eflags(int eflags);
 void load_gdtr(int limit, int addr);
 void load_idtr(int limit, int addr);
+void asm_inthandler21(void);
+void asm_inthandler27(void);
+void asm_inthandler2c(void);
 
 /* graphic.c */
 void init_palette(void);
@@ -67,9 +71,13 @@ void set_gatedesc(struct GATE_DESCRIPTOR *gd, int offset, int selector, int ar);
 #define LIMIT_BOTPAK	0x0007ffff
 #define AR_DATA32_RW	0x4092
 #define AR_CODE32_ER	0x409a
+#define AR_INTGATE32	0x008e
 
 /* int.c */
 void init_pic(void);
+void inthandler21(int *esp);
+void inthandler27(int *esp);
+void inthandler2c(int *esp);
 #define PIC0_ICW1		0x0020
 #define PIC0_OCW2		0x0020
 #define PIC0_IMR		0x0021
