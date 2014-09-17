@@ -24,18 +24,21 @@ void init_pic(void)
 	return;
 }
 
+#define PORT_KEYDAT		0x0060
+
+struct KEYBUF keybuf;
+
 void inthandler21(int *esp)
 /* 来自PS/2键盘的中断 */
 {
 	struct BOOTINFO *binfo = (struct BOOTINFO *) ADR_BOOTINFO;
 	unsigned char data, s[4];
-	io_out8(PIC0_OCW2, 0x61);	/* IRQ-01受付完了をPICに通知 */
+	io_out8(PIC0_OCW2, 0x61);	/* 通知PIC IRQ-01 已经受理完毕 */
 	data = io_in8(PORT_KEYDAT);
-
-	sprintf(s, "%02X", data);
-	boxfill8(binfo->vram, binfo->scrnx, COL8_008484, 0, 16, 15, 31);
-	putfonts8_asc(binfo->vram, binfo->scrnx, 0, 16, COL8_FFFFFF, s);
-
+	if (keybuf.flag == 0) {
+		keybuf.data = data;
+		keybuf.flag = 1;
+	}
 	return;
 }
 

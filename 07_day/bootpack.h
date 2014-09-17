@@ -74,6 +74,9 @@ void set_gatedesc(struct GATE_DESCRIPTOR *gd, int offset, int selector, int ar);
 #define AR_INTGATE32	0x008e
 
 /* int.c */
+struct KEYBUF {
+	unsigned char data, flag;
+};
 void init_pic(void);
 void inthandler21(int *esp);
 void inthandler27(int *esp);
