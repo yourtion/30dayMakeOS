@@ -4,6 +4,8 @@
 #include <stdio.h>
 
 extern struct FIFO8 keyfifo;
+void enable_mouse(void);
+void init_keyboard(void);
 
 void HariMain(void)
 {
@@ -19,6 +21,8 @@ void HariMain(void)
 	io_out8(PIC0_IMR, 0xf9); /* PIC1とキーボードを許可(11111001) */
 	io_out8(PIC1_IMR, 0xef); /* マウスを許可(11101111) */
 
+	init_keyboard();
+
 	init_palette();
 	init_screen8(binfo->vram, binfo->scrnx, binfo->scrny);
 	mx = (binfo->scrnx - 16) / 2; /* 计算画面中心坐标 */
@@ -27,6 +31,8 @@ void HariMain(void)
 	putblock8_8(binfo->vram, binfo->scrnx, 16, 16, mx, my, mcursor, 16);
 	sprintf(s, "(%d, %d)", mx, my);
 	putfonts8_asc(binfo->vram, binfo->scrnx, 0, 0, COL8_FFFFFF, s);
+
+	enable_mouse();
 
 	for (;;) {
 		io_cli();
@@ -40,4 +46,45 @@ void HariMain(void)
 			putfonts8_asc(binfo->vram, binfo->scrnx, 0, 16, COL8_FFFFFF, s);
 		}
 	}
+}
+
+#define PORT_KEYDAT				0x0060
+#define PORT_KEYSTA				0x0064
+#define PORT_KEYCMD				0x0064
+#define KEYSTA_SEND_NOTREADY	0x02
+#define KEYCMD_WRITE_MODE		0x60
+#define KBC_MODE				0x47
+
+void wait_KBC_sendready(void)
+{
+	/* 等待键盘控制电路准备完毕 */
+	for (;;) {
+		if ((io_in8(PORT_KEYSTA) & KEYSTA_SEND_NOTREADY) == 0) {
+			break;
+		}
+	}
+	return;
+}
+
+void init_keyboard(void)
+{
+	/* 初始化键盘控制电路 */
+	wait_KBC_sendready();
+	io_out8(PORT_KEYCMD, KEYCMD_WRITE_MODE);
+	wait_KBC_sendready();
+	io_out8(PORT_KEYDAT, KBC_MODE);
+	return;
+}
+
+#define KEYCMD_SENDTO_MOUSE		0xd4
+#define MOUSECMD_ENABLE			0xf4
+
+void enable_mouse(void)
+{
+	/* 激活鼠标 */
+	wait_KBC_sendready();
+	io_out8(PORT_KEYCMD, KEYCMD_SENDTO_MOUSE);
+	wait_KBC_sendready();
+	io_out8(PORT_KEYDAT, MOUSECMD_ENABLE);
+	return; /* 顺利的话，键盘控制器会返回ACK(0xfa) */
 }
