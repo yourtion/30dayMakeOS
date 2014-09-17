@@ -26,7 +26,7 @@ void init_pic(void)
 
 #define PORT_KEYDAT		0x0060
 
-struct KEYBUF keybuf;
+struct FIFO8 keyfifo;
 
 void inthandler21(int *esp)
 /* 来自PS/2键盘的中断 */
@@ -35,14 +35,7 @@ void inthandler21(int *esp)
 	unsigned char data, s[4];
 	io_out8(PIC0_OCW2, 0x61);	/* 通知PIC IRQ-01 已经受理完毕 */
 	data = io_in8(PORT_KEYDAT);
-	if (keybuf.len < 32) {
-		keybuf.data[keybuf.next_w] = data;
-		keybuf.len++;
-		keybuf.next_w++;
-		if (keybuf.next_w == 32) {
-			keybuf.next_w = 0;
-		}
-	}
+	fifo8_put(&keyfifo, data);
 	return;
 }
 
