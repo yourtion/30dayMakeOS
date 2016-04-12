@@ -26,32 +26,6 @@ void init_pic(void)
 
 #define PORT_KEYDAT		0x0060
 
-struct FIFO8 keyfifo;
-
-void inthandler21(int *esp)
-/* 来自PS/2键盘的中断 */
-{
-	struct BOOTINFO *binfo = (struct BOOTINFO *) ADR_BOOTINFO;
-	unsigned char data, s[4];
-	io_out8(PIC0_OCW2, 0x61);	/* 通知PIC IRQ-01 已经受理完毕 */
-	data = io_in8(PORT_KEYDAT);
-	fifo8_put(&keyfifo, data);
-	return;
-}
-
-struct FIFO8 mousefifo;
-
-void inthandler2c(int *esp)
-/* 来自PS/2鼠标的中断 */
-{
-	unsigned char data;
-	io_out8(PIC1_OCW2, 0x64);	/* 通知PIC IRQ-12 已经受理完毕 */
-	io_out8(PIC0_OCW2, 0x62);	/* 通知PIC IRQ-02 已经受理完毕 */
-	data = io_in8(PORT_KEYDAT);
-	fifo8_put(&mousefifo, data);
-	return;
-}
-
 void inthandler27(int *esp)
 /* PIC0中断的不完整策略 */
 /* 这个中断在Athlon64X2上通过芯片组提供的便利，只需执行一次 */
