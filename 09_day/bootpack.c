@@ -4,7 +4,6 @@
 #include <stdio.h>
 
 unsigned int memtest(unsigned int start, unsigned int end);
-unsigned int memtest_sub(unsigned int start, unsigned int end);
 
 void HariMain(void)
 {
@@ -129,28 +128,3 @@ unsigned int memtest(unsigned int start, unsigned int end)
 
 	return i;
 }
-
-unsigned int memtest_sub(unsigned int start, unsigned int end)
-{
-	unsigned int i, *p, old, pat0 = 0xaa55aa55, pat1 = 0x55aa55aa;
-	for (i = start; i <= end; i += 0x1000) {
-		p = (unsigned int *) (i + 0xffc);
-		old = *p; /* 先记住修改前的值 */
-		*p = pat0; /* 试写 */
-		*p ^= 0xffffffff; /* 反转 */
-		if (*p != pat1) { 
-			/* 检查反转结果 */
-			not_memory:
-			*p = old;
-			break;
-		}
-		*p ^= 0xffffffff; /* 再次反转 */
-		if (*p != pat0) { 
-			/* 检查值是否恢复 */
-			 goto not_memory;
-		}
-		*p = old; /* 恢复为修改前的值 */
-	}
-	return i;
-}
-
