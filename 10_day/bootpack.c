@@ -6,15 +6,14 @@
 void HariMain(void)
 {
 	struct BOOTINFO *binfo = (struct BOOTINFO *) ADR_BOOTINFO;
-	char s[40], mcursor[256], keybuf[32], mousebuf[128];
+	char s[40], keybuf[32], mousebuf[128];
 	int mx, my, i;
+	unsigned int memtotal;
 	struct MOUSE_DEC mdec;
+	struct MEMMAN *memman = (struct MEMMAN *) MEMMAN_ADDR;
 	struct SHTCTL *shtctl;
 	struct SHEET *sht_back, *sht_mouse;
 	unsigned char *buf_back, buf_mouse[256];
-
-	unsigned int memtotal;
-	struct MEMMAN *memman = (struct MEMMAN *) MEMMAN_ADDR;
 
 	init_gdtidt();
 	init_pic();
@@ -34,9 +33,9 @@ void HariMain(void)
 
 	init_palette();
 	shtctl = shtctl_init(memman, binfo->vram, binfo->scrnx, binfo->scrny);
-	sht_back = sheet_alloc(shtctl);
+	sht_back  = sheet_alloc(shtctl);
 	sht_mouse = sheet_alloc(shtctl);
-	buf_back = (unsigned char *) memman_alloc_4k(memman, binfo->scrnx * binfo->scrny);
+	buf_back  = (unsigned char *) memman_alloc_4k(memman, binfo->scrnx * binfo->scrny);
 	sheet_setbuf(sht_back, buf_back, binfo->scrnx, binfo->scrny, -1); /* 没有透明色 */
 	sheet_setbuf(sht_mouse, buf_mouse, 16, 16, 99); /* 透明色号99 */
 	init_screen8(buf_back, binfo->scrnx, binfo->scrny);
@@ -45,7 +44,7 @@ void HariMain(void)
 	mx = (binfo->scrnx - 16) / 2; /* 按显示在画面中央来计算坐标 */
 	my = (binfo->scrny - 28 - 16) / 2;
 	sheet_slide(shtctl, sht_mouse, mx, my);
-	sheet_updown(shtctl, sht_back, 0);
+	sheet_updown(shtctl, sht_back,  0);
 	sheet_updown(shtctl, sht_mouse, 1);
 	sprintf(s, "(%3d, %3d)", mx, my);
 	putfonts8_asc(buf_back, binfo->scrnx, 0, 0, COL8_FFFFFF, s);
@@ -62,7 +61,7 @@ void HariMain(void)
 				i = fifo8_get(&keyfifo);
 				io_sti();
 				sprintf(s, "%02X", i);
-				boxfill8(buf_back, binfo->scrnx, COL8_008484, 0, 16, 15, 31);
+				boxfill8(buf_back, binfo->scrnx, COL8_008484,  0, 16, 15, 31);
 				putfonts8_asc(buf_back, binfo->scrnx, 0, 16, COL8_FFFFFF, s);
 				sheet_refresh(shtctl);
 			} else if (fifo8_status(&mousefifo) != 0) {
