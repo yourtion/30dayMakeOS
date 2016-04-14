@@ -13,14 +13,19 @@ struct BOOTINFO { /* 0x0ff0-0x0fff */
 void io_hlt(void);
 void io_cli(void);
 void io_sti(void);
+void io_stihlt(void);
+int io_in8(int port);
 void io_out8(int port, int data);
 int io_load_eflags(void);
 void io_store_eflags(int eflags);
 void load_gdtr(int limit, int addr);
 void load_idtr(int limit, int addr);
+int load_cr0(void);
+void store_cr0(int cr0);
 void asm_inthandler21(void);
 void asm_inthandler27(void);
 void asm_inthandler2c(void);
+unsigned int memtest_sub(unsigned int start, unsigned int end);
 
 /* fifo.c */
 struct FIFO8 {
@@ -119,7 +124,7 @@ extern struct FIFO8 mousefifo;
 
 /* memory.c */
 #define MEMMAN_FREES 4090 /* 大约是32KB*/
-#define MEMMAN_ADDR 0x003c0000
+#define MEMMAN_ADDR			0x003c0000
 
 struct FREEINFO { /* 可用信息 */
 	unsigned int addr, size;
@@ -133,6 +138,30 @@ unsigned int memtest(unsigned int start, unsigned int end);
 void memman_init(struct MEMMAN *man);
 unsigned int memman_total(struct MEMMAN *man);
 unsigned int memman_alloc(struct MEMMAN *man, unsigned int size);
-unsigned int memman_alloc_4k(struct MEMMAN *man, unsigned int size);
 int memman_free(struct MEMMAN *man, unsigned int addr, unsigned int size);
+unsigned int memman_alloc_4k(struct MEMMAN *man, unsigned int size);
 int memman_free_4k(struct MEMMAN *man, unsigned int addr, unsigned int size);
+
+/* sheet.c */
+#define MAX_SHEETS		256
+#define SHEET_USE  1
+
+struct SHEET {
+	unsigned char *buf;
+	int bxsize, bysize, vx0, vy0, col_inv, height, flags;
+};
+
+struct SHTCTL {
+	unsigned char *vram;
+	int xsize, ysize, top;
+	struct SHEET *sheets[MAX_SHEETS];
+	struct SHEET sheets0[MAX_SHEETS];
+};
+
+struct SHTCTL *shtctl_init(struct MEMMAN *memman, unsigned char *vram, int xsize, int ysize);
+struct SHEET *sheet_alloc(struct SHTCTL *ctl);
+void sheet_setbuf(struct SHEET *sht, unsigned char *buf, int xsize, int ysize, int col_inv);
+void sheet_updown(struct SHTCTL *ctl, struct SHEET *sht, int height);
+void sheet_refresh(struct SHTCTL *ctl);
+void sheet_slide(struct SHTCTL *ctl, struct SHEET *sht, int vx0, int vy0);
+void sheet_free(struct SHTCTL *ctl, struct SHEET *sht);
