@@ -40,17 +40,17 @@ void HariMain(void)
 	sheet_setbuf(sht_mouse, buf_mouse, 16, 16, 99); /* 透明色号99 */
 	init_screen8(buf_back, binfo->scrnx, binfo->scrny);
 	init_mouse_cursor8(buf_mouse, 99); /* 背景色号99 */
-	sheet_slide(shtctl, sht_back, 0, 0);
+	sheet_slide(sht_back, 0, 0);
 	mx = (binfo->scrnx - 16) / 2; /* 按显示在画面中央来计算坐标 */
 	my = (binfo->scrny - 28 - 16) / 2;
-	sheet_slide(shtctl, sht_mouse, mx, my);
-	sheet_updown(shtctl, sht_back,  0);
-	sheet_updown(shtctl, sht_mouse, 1);
+	sheet_slide(sht_mouse, mx, my);
+	sheet_updown(sht_back,  0);
+	sheet_updown(sht_mouse, 1);
 	sprintf(s, "(%3d, %3d)", mx, my);
 	putfonts8_asc(buf_back, binfo->scrnx, 0, 0, COL8_FFFFFF, s);
 	sprintf(s, "memory %dMB free : %dKB", memtotal / (1024 * 1024), memman_total(memman) / 1024);
 	putfonts8_asc(buf_back, binfo->scrnx, 0, 32, COL8_FFFFFF, s);
-	sheet_refresh(shtctl, sht_back, 0, 0, binfo->scrnx, 48); /* 刷新文字 */
+	sheet_refresh(sht_back, 0, 0, binfo->scrnx, 48); /* 刷新文字 */
 
 	for (;;) {
 		io_cli();
@@ -63,7 +63,7 @@ void HariMain(void)
 				sprintf(s, "%02X", i);
 				boxfill8(buf_back, binfo->scrnx, COL8_008484,  0, 16, 15, 31);
 				putfonts8_asc(buf_back, binfo->scrnx, 0, 16, COL8_FFFFFF, s);
-				sheet_refresh(shtctl, sht_back, 0, 16, 16, 32); /* 刷新文字 */
+				sheet_refresh(sht_back, 0, 16, 16, 32); /* 刷新文字 */
 			} else if (fifo8_status(&mousefifo) != 0) {
 				i = fifo8_get(&mousefifo);
 				io_sti();
@@ -81,7 +81,7 @@ void HariMain(void)
 					}
 					boxfill8(buf_back, binfo->scrnx, COL8_008484, 32, 16, 32 + 15 * 8 - 1, 31);
 					putfonts8_asc(buf_back, binfo->scrnx, 32, 16, COL8_FFFFFF, s);
-					sheet_refresh(shtctl, sht_back, 32, 16, 32 + 15 * 8, 32);  /* 刷新文字 */
+					sheet_refresh(sht_back, 32, 16, 32 + 15 * 8, 32);  /* 刷新文字 */
 					/* 移动光标 */
 					mx += mdec.x;
 					my += mdec.y;
@@ -100,8 +100,8 @@ void HariMain(void)
 					sprintf(s, "(%3d, %3d)", mx, my);
 					boxfill8(buf_back, binfo->scrnx, COL8_008484, 0, 0, 79, 15); /* 消坐标 */
 					putfonts8_asc(buf_back, binfo->scrnx, 0, 0, COL8_FFFFFF, s); /* 写坐标 */
-					sheet_refresh(shtctl, sht_back, 0, 0, 80, 16); /* 刷新文字 */
-					sheet_slide(shtctl, sht_mouse, mx, my); /* 包含sheet_refresh含sheet_refresh */
+					sheet_refresh(sht_back, 0, 0, 80, 16); /* 刷新文字 */
+					sheet_slide(sht_mouse, mx, my); /* 包含sheet_refresh含sheet_refresh */
 				}
 			}
 		}

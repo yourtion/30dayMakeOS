@@ -15,7 +15,7 @@ struct SHTCTL *shtctl_init(struct MEMMAN *memman, unsigned char *vram, int xsize
 	ctl->vram = vram;
 	ctl->xsize = xsize;
 	ctl->ysize = ysize;
-	ctl->top = -1; /* �V�[�g�͈ꖇ���Ȃ� */
+	ctl->top = -1; /* 没有一张SHEET */
 	for (i = 0; i < MAX_SHEETS; i++) {
 		ctl->sheets0[i].flags = 0; /* 标记为未使用 */
 	}
