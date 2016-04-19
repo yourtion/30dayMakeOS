@@ -1,4 +1,4 @@
-/* bootpackのメイン */
+/* bootpack*/
 
 #include "bootpack.h"
 #include <stdio.h>
@@ -52,9 +52,9 @@ void HariMain(void)
 	shtctl = shtctl_init(memman, binfo->vram, binfo->scrnx, binfo->scrny);
 	sht_back  = sheet_alloc(shtctl);
 	sht_mouse = sheet_alloc(shtctl);
-	sht_win = sheet_alloc(shtctl);
+	sht_win   = sheet_alloc(shtctl);
 	buf_back  = (unsigned char *) memman_alloc_4k(memman, binfo->scrnx * binfo->scrny);
-	buf_win = (unsigned char *) memman_alloc_4k(memman, 160 * 52);
+	buf_win   = (unsigned char *) memman_alloc_4k(memman, 160 * 52);
 	sheet_setbuf(sht_back, buf_back, binfo->scrnx, binfo->scrny, -1); /* 没有透明色 */
 	sheet_setbuf(sht_mouse, buf_mouse, 16, 16, 99); /* 透明色号99 */
 	sheet_setbuf(sht_win, buf_win, 160, 52, -1); /* 没有透明色 */
@@ -65,13 +65,14 @@ void HariMain(void)
 	mx = (binfo->scrnx - 16) / 2; /* 按显示在画面中央来计算坐标 */
 	my = (binfo->scrny - 28 - 16) / 2;
 	sheet_slide(sht_mouse, mx, my);
-	sheet_slide(sht_win, 80, 72); 
+	sheet_slide(sht_win, 80, 72);
 	sheet_updown(sht_back,  0);
-	sheet_updown(sht_win, 1);
+	sheet_updown(sht_win,   1);
 	sheet_updown(sht_mouse, 2);
 	sprintf(s, "(%3d, %3d)", mx, my);
 	putfonts8_asc(buf_back, binfo->scrnx, 0, 0, COL8_FFFFFF, s);
-	sprintf(s, "memory %dMB free : %dKB", memtotal / (1024 * 1024), memman_total(memman) / 1024);
+	sprintf(s, "memory %dMB   free : %dKB",
+			memtotal / (1024 * 1024), memman_total(memman) / 1024);
 	putfonts8_asc(buf_back, binfo->scrnx, 0, 32, COL8_FFFFFF, s);
 	sheet_refresh(sht_back, 0, 0, binfo->scrnx, 48); /* 刷新文字 */
 
@@ -82,7 +83,8 @@ void HariMain(void)
 		sheet_refresh(sht_win, 40, 28, 120, 44); /* 到这里结束 */
 
 		io_cli();
-		if (fifo8_status(&keyfifo) + fifo8_status(&mousefifo) + fifo8_status(&timerfifo) + fifo8_status(&timerfifo2) + fifo8_status(&timerfifo3)== 0) {
+		if (fifo8_status(&keyfifo) + fifo8_status(&mousefifo) + fifo8_status(&timerfifo)
+				+ fifo8_status(&timerfifo2) + fifo8_status(&timerfifo3) == 0) {
 			io_sti(); /* 不做HLT */
 		} else {
 			if (fifo8_status(&keyfifo) != 0) {
@@ -176,21 +178,19 @@ void make_window8(unsigned char *buf, int xsize, int ysize, char *title)
 		"O$$$$$$$$$$$$$$@",
 		"@@@@@@@@@@@@@@@@"
 	};
-
 	int x, y;
 	char c;
-	boxfill8(buf, xsize, COL8_C6C6C6, 0, 0, xsize - 1, 0 );
-	boxfill8(buf, xsize, COL8_FFFFFF, 1, 1, xsize - 2, 1 );
-	boxfill8(buf, xsize, COL8_C6C6C6, 0, 0, 0, ysize - 1);
-	boxfill8(buf, xsize, COL8_FFFFFF, 1, 1, 1, ysize - 2);
-	boxfill8(buf, xsize, COL8_848484, xsize - 2, 1, xsize - 2, ysize - 2);
-	boxfill8(buf, xsize, COL8_000000, xsize - 1, 0, xsize - 1, ysize - 1);
-	boxfill8(buf, xsize, COL8_C6C6C6, 2, 2, xsize - 3, ysize - 3);
-	boxfill8(buf, xsize, COL8_000084, 3, 3, xsize - 4, 20 );
-	boxfill8(buf, xsize, COL8_848484, 1, ysize - 2, xsize - 2, ysize - 2);
-	boxfill8(buf, xsize, COL8_000000, 0, ysize - 1, xsize - 1, ysize - 1);
+	boxfill8(buf, xsize, COL8_C6C6C6, 0,         0,         xsize - 1, 0        );
+	boxfill8(buf, xsize, COL8_FFFFFF, 1,         1,         xsize - 2, 1        );
+	boxfill8(buf, xsize, COL8_C6C6C6, 0,         0,         0,         ysize - 1);
+	boxfill8(buf, xsize, COL8_FFFFFF, 1,         1,         1,         ysize - 2);
+	boxfill8(buf, xsize, COL8_848484, xsize - 2, 1,         xsize - 2, ysize - 2);
+	boxfill8(buf, xsize, COL8_000000, xsize - 1, 0,         xsize - 1, ysize - 1);
+	boxfill8(buf, xsize, COL8_C6C6C6, 2,         2,         xsize - 3, ysize - 3);
+	boxfill8(buf, xsize, COL8_000084, 3,         3,         xsize - 4, 20       );
+	boxfill8(buf, xsize, COL8_848484, 1,         ysize - 2, xsize - 2, ysize - 2);
+	boxfill8(buf, xsize, COL8_000000, 0,         ysize - 1, xsize - 1, ysize - 1);
 	putfonts8_asc(buf, xsize, 24, 4, COL8_FFFFFF, title);
-
 	for (y = 0; y < 14; y++) {
 		for (x = 0; x < 16; x++) {
 			c = closebtn[y][x];

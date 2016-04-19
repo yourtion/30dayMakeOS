@@ -2,12 +2,13 @@
 
 #include "bootpack.h"
 
-#define PIT_CTRL 0x0043
-#define PIT_CNT0 0x0040
-#define TIMER_FLAGS_ALLOC 1 /* 已配置状态 */
-#define TIMER_FLAGS_USING 2 /* 定时器运行中 */
+#define PIT_CTRL	0x0043
+#define PIT_CNT0	0x0040
 
 struct TIMERCTL timerctl;
+
+#define TIMER_FLAGS_ALLOC 1 /* 已配置状态 */
+#define TIMER_FLAGS_USING 2 /* 定时器运行中 */
 
 void init_pit(void)
 {

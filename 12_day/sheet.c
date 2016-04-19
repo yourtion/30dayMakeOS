@@ -86,7 +86,7 @@ void sheet_updown(struct SHEET *sht, int height)
 			}
 			ctl->top--; /* 由于显示中的图层减少了一个，所以最上面的图层高度下降 */
 			sheet_refreshmap(ctl, sht->vx0, sht->vy0, sht->vx0 + sht->bxsize, sht->vy0 + sht->bysize, 0);
-			sheet_refreshsub(ctl, sht->vx0, sht->vy0, sht->vx0 + sht->bxsize, sht->vy0 + sht->bysize, 0, old - 1);		
+			sheet_refreshsub(ctl, sht->vx0, sht->vy0, sht->vx0 + sht->bxsize, sht->vy0 + sht->bysize, 0, old - 1);
 		}
 	} else if (old < height) { /* 比以前高 */
 		if (old >= 0) {
@@ -130,11 +130,10 @@ void sheet_refreshsub(struct SHTCTL *ctl, int vx0, int vy0, int vx1, int vy1, in
 	if (vy0 < 0) { vy0 = 0; }
 	if (vx1 > ctl->xsize) { vx1 = ctl->xsize; }
 	if (vy1 > ctl->ysize) { vy1 = ctl->ysize; }
-
-	for (h = h0; h <= ctl->top; h++) {
+	for (h = h0; h <= h1; h++) {
 		sht = ctl->sheets[h];
 		buf = sht->buf;
-		sid = sht -ctl->sheets0;
+		sid = sht - ctl->sheets0;
 
 		/* 使用vx0～vy1，对bx0～by1进行倒推 */
 		bx0 = vx0 - sht->vx0;
@@ -145,7 +144,6 @@ void sheet_refreshsub(struct SHTCTL *ctl, int vx0, int vy0, int vx1, int vy1, in
 		if (by0 < 0) { by0 = 0; }
 		if (bx1 > sht->bxsize) { bx1 = sht->bxsize; } /* 应对不同的重叠方式 */
 		if (by1 > sht->bysize) { by1 = sht->bysize; }
-
 		for (by = by0; by < by1; by++) {
 			vy = sht->vy0 + by;
 			for (bx = bx0; bx < bx1; bx++) {
@@ -164,12 +162,10 @@ void sheet_refreshmap(struct SHTCTL *ctl, int vx0, int vy0, int vx1, int vy1, in
 	int h, bx, by, vx, vy, bx0, by0, bx1, by1;
 	unsigned char *buf, sid, *map = ctl->map;
 	struct SHEET *sht;
-
 	if (vx0 < 0) { vx0 = 0; }
 	if (vy0 < 0) { vy0 = 0; }
 	if (vx1 > ctl->xsize) { vx1 = ctl->xsize; }
 	if (vy1 > ctl->ysize) { vy1 = ctl->ysize; }
-
 	for (h = h0; h <= ctl->top; h++) {
 		sht = ctl->sheets[h];
 		sid = sht - ctl->sheets0; /* 将进行了减法计算的地址作为图层号码使用 */
@@ -182,7 +178,6 @@ void sheet_refreshmap(struct SHTCTL *ctl, int vx0, int vy0, int vx1, int vy1, in
 		if (by0 < 0) { by0 = 0; }
 		if (bx1 > sht->bxsize) { bx1 = sht->bxsize; }
 		if (by1 > sht->bysize) { by1 = sht->bysize; }
-
 		for (by = by0; by < by1; by++) {
 			vy = sht->vy0 + by;
 			for (bx = bx0; bx < bx1; bx++) {

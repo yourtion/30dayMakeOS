@@ -4,7 +4,8 @@
 
 struct FIFO8 mousefifo;
 
-void inthandler2c(int *esp) {
+void inthandler2c(int *esp)
+{
 	/* 来自PS/2鼠标的中断 */
 	unsigned char data;
 	io_out8(PIC1_OCW2, 0x64);	/* 通知PIC IRQ-12 已经受理完毕 */
@@ -17,7 +18,8 @@ void inthandler2c(int *esp) {
 #define KEYCMD_SENDTO_MOUSE   0xd4
 #define MOUSECMD_ENABLE     0xf4
 
-void enable_mouse(struct MOUSE_DEC *mdec) {
+void enable_mouse(struct MOUSE_DEC *mdec)
+{
 	/* 鼠标有效 */
 	wait_KBC_sendready();
 	io_out8(PORT_KEYCMD, KEYCMD_SENDTO_MOUSE);
@@ -28,7 +30,8 @@ void enable_mouse(struct MOUSE_DEC *mdec) {
 	return;
 }
 
-int mouse_decode(struct MOUSE_DEC *mdec, unsigned char dat) {
+int mouse_decode(struct MOUSE_DEC *mdec, unsigned char dat)
+{
 	if (mdec->phase == 0) {
 		/* 等待鼠标的0xfa的阶段 */
 		if (dat == 0xfa) {
