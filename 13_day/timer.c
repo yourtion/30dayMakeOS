@@ -20,7 +20,7 @@ void init_pit(void)
 	timerctl.next = 0xffffffff; /* 因为最初没有正在运行的定时器 */
 	timerctl.using = 0;
 	for (i = 0; i < MAX_TIMER; i++) {
-	timerctl.timers0[i].flags = 0; /* 未使用 */
+		timerctl.timers0[i].flags = 0; /* 未使用 */
 	}
 	return;
 }
@@ -43,7 +43,7 @@ void timer_free(struct TIMER *timer)
 	return;
 }
 
-void timer_init(struct TIMER *timer, struct FIFO32 *fifo, unsigned char data)
+void timer_init(struct TIMER *timer, struct FIFO32 *fifo, int data)
 {
 	timer->fifo = fifo;
 	timer->data = data;
@@ -83,7 +83,6 @@ void inthandler20(int *esp)
 	if (timerctl.next > timerctl.count) {
 		return; /* 还不到下一个时刻，所以结束*/
 	}
-	timerctl.next = 0xffffffff;
 	for (i = 0; i < timerctl.using; i++) {
 		/* timers的定时器都处于动作中，所以不确认flags */
 		if (timerctl.timers[i]->timeout > timerctl.count) {

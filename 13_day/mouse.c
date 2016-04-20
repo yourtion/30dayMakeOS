@@ -6,8 +6,8 @@ struct FIFO32 *mousefifo;
 int mousedata0;
 
 void inthandler2c(int *esp)
+/* 来自PS/2鼠标的中断 */
 {
-	/* 来自PS/2鼠标的中断 */
 	int data;
 	io_out8(PIC1_OCW2, 0x64); /* 把IRQ-12接收信号结束的信息通知给PIC1 */
 	io_out8(PIC0_OCW2, 0x62); /* 把IRQ-02接收信号结束的信息通知给PIC0 */
@@ -67,9 +67,8 @@ int mouse_decode(struct MOUSE_DEC *mdec, unsigned char dat)
 		}
 		if ((mdec->buf[0] & 0x20) != 0) {
 			mdec->y |= 0xffffff00;
-		}     
-		/* 鼠标的y方向与画面符号相反 */   
-		mdec->y = - mdec->y; 
+		}      
+		mdec->y = - mdec->y; /* 鼠标的y方向与画面符号相反 */  
 		return 1;
 	}
 	/* 应该不可能到这里来 */

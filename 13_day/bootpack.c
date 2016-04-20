@@ -13,7 +13,7 @@ void HariMain(void)
 	char s[40];
 	int fifobuf[128];
 	struct TIMER *timer, *timer2, *timer3;
-	int mx, my, i, count;
+	int mx, my, i, count = 0;
 	unsigned int memtotal;
 	struct MOUSE_DEC mdec;
 	struct MEMMAN *memman = (struct MEMMAN *) MEMMAN_ADDR;
@@ -25,11 +25,11 @@ void HariMain(void)
 	init_pic();
 	io_sti(); /* IDT/PIC的初始化已经完成，于是开放CPU的中断 */
 	fifo32_init(&fifo, 128, fifobuf);
+	init_pit();
 	init_keyboard(&fifo, 256);
 	enable_mouse(&fifo, 512, &mdec);
 	io_out8(PIC0_IMR, 0xf8); /* 设定PIT和PIC1以及键盘为许可(11111000) */
 	io_out8(PIC1_IMR, 0xef); /* 开放鼠标中断(11101111) */
-	init_pit();
 
 	timer = timer_alloc();
 	timer_init(timer, &fifo, 10);
