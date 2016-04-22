@@ -22,11 +22,13 @@ void load_gdtr(int limit, int addr);
 void load_idtr(int limit, int addr);
 int load_cr0(void);
 void store_cr0(int cr0);
+void load_tr(int tr);
 void asm_inthandler20(void);
 void asm_inthandler21(void);
 void asm_inthandler27(void);
 void asm_inthandler2c(void);
 unsigned int memtest_sub(unsigned int start, unsigned int end);
+void taskswitch4(void);
 
 /* fifo.c */
 struct FIFO32 {
@@ -87,6 +89,7 @@ void set_gatedesc(struct GATE_DESCRIPTOR *gd, int offset, int selector, int ar);
 #define LIMIT_BOTPAK	0x0007ffff
 #define AR_DATA32_RW	0x4092
 #define AR_CODE32_ER	0x409a
+#define AR_TSS32		0x0089
 #define AR_INTGATE32	0x008e
 
 /* int.c */
@@ -124,7 +127,6 @@ int mouse_decode(struct MOUSE_DEC *mdec, unsigned char dat);
 /* memory.c */
 #define MEMMAN_FREES 4090 /* 大约是32KB*/
 #define MEMMAN_ADDR			0x003c0000
-
 struct FREEINFO { /* 可用信息 */
 	unsigned int addr, size;
 };
@@ -132,7 +134,6 @@ struct MEMMAN { /* 内存管理 */
 	int frees, maxfrees, lostsize, losts;
 	struct FREEINFO free[MEMMAN_FREES];
 };
-
 unsigned int memtest(unsigned int start, unsigned int end);
 void memman_init(struct MEMMAN *man);
 unsigned int memman_total(struct MEMMAN *man);
@@ -143,21 +144,17 @@ int memman_free_4k(struct MEMMAN *man, unsigned int addr, unsigned int size);
 
 /* sheet.c */
 #define MAX_SHEETS		256
-#define SHEET_USE  1
-
 struct SHEET {
 	unsigned char *buf;
 	int bxsize, bysize, vx0, vy0, col_inv, height, flags;
 	struct SHTCTL *ctl;
 };
-
 struct SHTCTL {
 	unsigned char *vram, *map;
 	int xsize, ysize, top;
 	struct SHEET *sheets[MAX_SHEETS];
 	struct SHEET sheets0[MAX_SHEETS];
 };
-
 struct SHTCTL *shtctl_init(struct MEMMAN *memman, unsigned char *vram, int xsize, int ysize);
 struct SHEET *sheet_alloc(struct SHTCTL *ctl);
 void sheet_setbuf(struct SHEET *sht, unsigned char *buf, int xsize, int ysize, int col_inv);
@@ -167,7 +164,7 @@ void sheet_slide(struct SHEET *sht, int vx0, int vy0);
 void sheet_free(struct SHEET *sht);
 
 /* timer.c */
-#define MAX_TIMER 500
+#define MAX_TIMER		500
 struct TIMER {
 	struct TIMER *next;
 	unsigned int timeout, flags;
@@ -180,11 +177,9 @@ struct TIMERCTL {
 	struct TIMER timers0[MAX_TIMER];
 };
 extern struct TIMERCTL timerctl;
-
 void init_pit(void);
 struct TIMER *timer_alloc(void);
 void timer_free(struct TIMER *timer);
 void timer_init(struct TIMER *timer, struct FIFO32 *fifo, int data);
 void timer_settime(struct TIMER *timer, unsigned int timeout);
 void inthandler20(int *esp);
-
