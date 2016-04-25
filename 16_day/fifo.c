@@ -18,7 +18,7 @@ void fifo32_init(struct FIFO32 *fifo, int size, int *buf, struct TASK *task)
 }
 
 int fifo32_put(struct FIFO32 *fifo, int data)
-/*给FIFO发送数据并储存在FIFO中*/
+/*向FIFO写入数据并累积起来*/
 {
 	if (fifo->free == 0) {
 		/*没有空余空间，溢出*/
@@ -33,7 +33,7 @@ int fifo32_put(struct FIFO32 *fifo, int data)
 	fifo->free--;
 	if (fifo->task != 0) {
 		if (fifo->task->flags != 2) { /*如果任务处于休眠状态*/
-			task_run(fifo->task); /*将任务唤醒*/
+			task_run(fifo->task, 0); /*将任务唤醒*/
 		}
 	}
 	return 0;
