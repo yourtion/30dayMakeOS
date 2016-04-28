@@ -384,7 +384,7 @@ void console_task(struct SHEET *sheet, unsigned int memtotal)
 	struct TIMER *timer;
 	struct TASK *task = task_now();
 	int i, fifobuf[128], cursor_x = 16, cursor_y = 28, cursor_c = -1;
-	char s[30], cmdline[30];
+	char s[30], cmdline[30], *p;
 	struct MEMMAN *memman = (struct MEMMAN *) MEMMAN_ADDR;
 	int x, y;
 	struct FILEINFO *finfo = (struct FILEINFO *) (ADR_DISKIMG + 0x002600);
@@ -480,6 +480,63 @@ void console_task(struct SHEET *sheet, unsigned int memtotal)
 						}
 					}
 					cursor_y = cons_newline(cursor_y, sheet);
+				} else if (cmdline[0] == 't' && cmdline[1] == 'y' && cmdline[2] == 'p' && cmdline[3] == 'e' && cmdline[4] == ' ') {
+					/* type命令*/
+					/*准备文件名*/
+					for (y = 0; y < 11; y++) {
+						s[y] = ' ';
+					}
+					y = 0;
+					for (x = 5; y < 11 && cmdline[x] != 0; x++) {
+						if (cmdline[x] == '.' && y <= 8) {
+							y = 8;
+						} else {
+							s[y] = cmdline[x];
+							if ('a' <= s[y] && s[y] <= 'z') {
+								/*将小写字母转换成大写字母 */
+								s[y] -= 0x20;
+							}
+							y++;
+						}
+					}
+					/*寻找文件*/
+					for (x = 0; x < 224; ) {
+						if (finfo[x].name[0] == 0x00) {
+							break;
+						}
+						if ((finfo[x].type & 0x18) == 0) {
+							for (y = 0; y < 11; y++) {
+								if (finfo[x].name[y] != s[y]) {
+									goto type_next_file;
+								}
+							}
+							break; /*找到文件*/
+						}
+						type_next_file:
+						x++;
+					}
+					if (x < 224 && finfo[x].name[0] != 0x00) {
+						/*找到文件的情况*/
+						y = finfo[x].size;
+						p = (char *) (finfo[x].clustno * 512 + 0x003e00 + ADR_DISKIMG);
+						cursor_x = 8;
+						for (x = 0; x < y; x++) {
+							/*逐字输出*/
+							s[0] = p[x];
+							s[1] = 0;
+							putfonts8_asc_sht(sheet, cursor_x, cursor_y, COL8_FFFFFF,COL8_000000, s, 1);
+							cursor_x += 8;
+							if (cursor_x == 8 + 240) { /*到达最右端后换行*/
+								cursor_x = 8;
+								cursor_y = cons_newline(cursor_y, sheet);
+							}
+						}
+					} else {
+						/*没有找到文件的情况*/
+						putfonts8_asc_sht(sheet, 8, cursor_y, COL8_FFFFFF, COL8_000000, "File not found.", 15);
+						cursor_y = cons_newline(cursor_y, sheet);
+					}
+						cursor_y = cons_newline(cursor_y, sheet);
 				}	else if (cmdline[0] != 0) {
 						/*不是命令，也不是空行 */
 						putfonts8_asc_sht(sheet, 8, cursor_y, COL8_FFFFFF, COL8_000000, "Bad command.", 12);
