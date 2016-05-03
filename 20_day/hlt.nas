@@ -1,6 +1,6 @@
 [BITS 32]
 		MOV		AL,'A'
-		CALL	0xbe3
+		CALL	2*8:0xbe3
 fin:
 		HLT
 		JMP		fin

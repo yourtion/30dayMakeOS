@@ -220,4 +220,4 @@ _asm_cons_putchar:
 		PUSH		DWORD [0x0fec] ; 读取内存并PUSH该值
 		CALL		_cons_putchar
 		ADD			ESP,12   ; 将栈中的数据丢弃
-		RET
+		RETF
