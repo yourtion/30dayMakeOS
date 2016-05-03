@@ -1,6 +1,7 @@
 [INSTRSET "i486p"]
 [BITS 32]
 		MOV		ECX,msg
+		MOV		EDX,1
 putloop:
 		MOV		AL,[CS:ECX]
 		CMP		AL,0
@@ -9,6 +10,6 @@ putloop:
 		ADD		ECX,1
 		JMP		putloop
 fin:
-	RETF
+		RETF
 msg:
-		DB		"hello",0
+		DB	"hello",0
