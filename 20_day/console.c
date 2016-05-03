@@ -256,7 +256,7 @@ void cmd_hlt(struct CONSOLE *cons, int *fat)
 		p = (char *) memman_alloc_4k(memman, finfo->size);
 		file_loadfile(finfo->clustno, finfo->size, p, fat, (char *) (ADR_DISKIMG + 0x003e00));
 		set_segmdesc(gdt + 1003, finfo->size - 1, (int) p, AR_CODE32_ER);
-		farjmp(0, 1003 * 8);
+		farcall(0, 1003 * 8);
 		memman_free_4k(memman, (int) p, finfo->size);
 	} else {
 		/*没有找到文件的情况*/
