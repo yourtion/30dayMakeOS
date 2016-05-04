@@ -68,7 +68,7 @@ haribote.sys : asmhead.bin bootpack.hrb Makefile
 	copy /B asmhead.bin+bootpack.hrb haribote.sys
 
 crack1.bim : crack1.obj Makefile
-	$(OBJ2BIM) @$(RULEFILE) out:crack1.bim map:crack1.map crack1.obj
+	$(OBJ2BIM) @$(RULEFILE) out:crack1.bim map:crack1.map crack1.obj a_nask.obj
 
 crack1.hrb : crack1.bim Makefile
 	$(BIM2HRB) crack1.bim crack1.hrb 0
@@ -90,7 +90,7 @@ haribote.img : ipl10.bin haribote.sys Makefile \
 		copy from:crack1.hrb to:@: \
 		copy from:crack2.hrb to:@: \
 		imgout:haribote.img
-		
+
 # 其他指令
 
 %.gas : %.c bootpack.h Makefile
