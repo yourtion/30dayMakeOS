@@ -46,6 +46,9 @@ bootpack.bim : $(OBJS_BOOTPACK) Makefile
 bootpack.hrb : bootpack.bim Makefile
 	$(BIM2HRB) bootpack.bim bootpack.hrb 0
 
+haribote.sys : asmhead.bin bootpack.hrb Makefile
+	copy /B asmhead.bin+bootpack.hrb haribote.sys
+
 hello.hrb : hello.nas Makefile
 	$(NASK) hello.nas hello.hrb hello.lst
 
@@ -64,33 +67,26 @@ hello3.bim : hello3.obj a_nask.obj Makefile
 hello3.hrb : hello3.bim Makefile
 	$(BIM2HRB) hello3.bim hello3.hrb 0
 
-haribote.sys : asmhead.bin bootpack.hrb Makefile
-	copy /B asmhead.bin+bootpack.hrb haribote.sys
+bug1.bim : bug1.obj Makefile
+	$(OBJ2BIM) @$(RULEFILE) out:bug1.bim map:bug1.map bug1.obj a_nask.obj
 
-crack1.bim : crack1.obj Makefile
-	$(OBJ2BIM) @$(RULEFILE) out:crack1.bim map:crack1.map crack1.obj a_nask.obj
+bug1.hrb : bug1.bim Makefile
+	$(BIM2HRB) bug1.bim bug1.hrb 0
 
-crack1.hrb : crack1.bim Makefile
-	$(BIM2HRB) crack1.bim crack1.hrb 0
+bug2.bim : bug2.obj Makefile
+	$(OBJ2BIM) @$(RULEFILE) out:bug2.bim map:bug2.map bug2.obj
 
-crack2.hrb : crack2.nas Makefile
-	$(NASK) crack2.nas crack2.hrb crack2.lst
+bug2.hrb : bug2.bim Makefile
+	$(BIM2HRB) bug2.bim bug2.hrb 0
 
-crack3.hrb : crack3.nas Makefile
-	$(NASK) crack3.nas crack3.hrb crack3.lst
+bug3.bim : bug3.obj Makefile
+	$(OBJ2BIM) @$(RULEFILE) out:bug3.bim map:bug3.map bug3.obj a_nask.obj
 
-crack4.hrb : crack4.nas Makefile
-	$(NASK) crack4.nas crack4.hrb crack4.lst
-
-crack5.hrb : crack5.nas Makefile
-	$(NASK) crack5.nas crack5.hrb crack5.lst
-
-crack6.hrb : crack6.nas Makefile
-	$(NASK) crack6.nas crack6.hrb crack6.lst
+bug3.hrb : bug3.bim Makefile
+	$(BIM2HRB) bug3.bim bug3.hrb 0
 
 haribote.img : ipl10.bin haribote.sys Makefile \
-		hello.hrb hello2.hrb a.hrb hello3.hrb crack1.hrb crack2.hrb crack3.hrb \
-		crack4.hrb crack5.hrb crack6.hrb
+		hello.hrb hello2.hrb a.hrb hello3.hrb bug1.hrb bug2.hrb bug3.hrb
 	$(EDIMG)   imgin:../z_tools/fdimg0at.tek \
 		wbinimg src:ipl10.bin len:512 from:0 to:0 \
 		copy from:haribote.sys to:@: \
@@ -100,12 +96,9 @@ haribote.img : ipl10.bin haribote.sys Makefile \
 		copy from:hello2.hrb to:@: \
 		copy from:a.hrb to:@: \
 		copy from:hello3.hrb to:@: \
-		copy from:crack1.hrb to:@: \
-		copy from:crack2.hrb to:@: \
-		copy from:crack3.hrb to:@: \
-		copy from:crack4.hrb to:@: \
-		copy from:crack5.hrb to:@: \
-		copy from:crack6.hrb to:@: \
+		copy from:bug1.hrb to:@: \
+		copy from:bug2.hrb to:@: \
+		copy from:bug3.hrb to:@: \
 		imgout:haribote.img
 
 # 其他指令
