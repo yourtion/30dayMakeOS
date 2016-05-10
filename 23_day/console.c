@@ -373,6 +373,8 @@ int *hrb_api(int edi, int esi, int ebp, int esp, int ebx, int edx, int ecx, int 
 		if ((ebx & 1) == 0) {
 			sheet_refresh(sht, eax, ecx, esi + 1, edi + 1);
 		}
+	} else if (edx == 14) {
+		sheet_free((struct SHEET *) ebx);
 	}
 	return 0;
 }
