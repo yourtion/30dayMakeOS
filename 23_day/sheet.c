@@ -38,6 +38,7 @@ struct SHEET *sheet_alloc(struct SHTCTL *ctl)
 			sht = &ctl->sheets0[i];
 			sht->flags = SHEET_USE; /* 标记为正在使用*/
 			sht->height = -1; /* 隐藏 */
+			sht->task = 0; /*不使用自动关闭功能*/
 			return sht;
 		}
 	}
