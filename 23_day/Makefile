@@ -113,9 +113,23 @@ winhelo3.bim : winhelo3.obj a_nask.obj Makefile
 winhelo3.hrb : winhelo3.bim Makefile
 	$(BIM2HRB) winhelo3.bim winhelo3.hrb 40k
 
+star1.bim : star1.obj a_nask.obj Makefile
+	$(OBJ2BIM) @$(RULEFILE) out:star1.bim stack:1k map:star1.map \
+		star1.obj a_nask.obj
+
+star1.hrb : star1.bim Makefile
+	$(BIM2HRB) star1.bim star1.hrb 47k
+
+stars.bim : stars.obj a_nask.obj Makefile
+	$(OBJ2BIM) @$(RULEFILE) out:stars.bim stack:1k map:stars.map \
+		stars.obj a_nask.obj
+
+stars.hrb : stars.bim Makefile
+	$(BIM2HRB) stars.bim stars.hrb 47k
+
 haribote.img : ipl10.bin haribote.sys Makefile \
 		hello.hrb hello2.hrb a.hrb hello3.hrb hello4.hrb hello5.hrb \
-		winhelo.hrb winhelo2.hrb winhelo3.hrb
+		winhelo.hrb winhelo2.hrb winhelo3.hrb star1.hrb stars.hrb
 	$(EDIMG)   imgin:../z_tools/fdimg0at.tek \
 		wbinimg src:ipl10.bin len:512 from:0 to:0 \
 		copy from:haribote.sys to:@: \
@@ -130,6 +144,8 @@ haribote.img : ipl10.bin haribote.sys Makefile \
 		copy from:winhelo.hrb to:@: \
 		copy from:winhelo2.hrb to:@: \
 		copy from:winhelo3.hrb to:@: \
+		copy from:star1.hrb to:@: \
+		copy from:stars.hrb to:@: \
 		imgout:haribote.img
 		
 # 其他指令
