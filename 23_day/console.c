@@ -321,6 +321,8 @@ int *hrb_api(int edi, int esi, int ebp, int esp, int ebx, int edx, int ecx, int 
 	/*强行改写通过PUSHAD保存的值*/
 	/* reg[0] : EDI, reg[1] : ESI, reg[2] : EBP, reg[3] : ESP */
 	/* reg[4] : EBX, reg[5] : EDX, reg[6] : ECX, reg[7] : EAX */
+	int i;
+
 	if (edx == 1) {
 		cons_putchar(cons, eax & 0xff, 1);
 	} else if (edx == 2) {
@@ -375,6 +377,36 @@ int *hrb_api(int edi, int esi, int ebp, int esp, int ebx, int edx, int ecx, int 
 		}
 	} else if (edx == 14) {
 		sheet_free((struct SHEET *) ebx);
+	} else if (edx == 15) {
+		for (;;) {
+			io_cli();
+			if (fifo32_status(&task->fifo) == 0) {
+				if (eax != 0) {
+					task_sleep(task); /* FIFO为空，休眠并等待*/
+				} else {
+					io_sti();
+					reg[7] = -1;
+					return 0;
+				}
+			}
+			i = fifo32_get(&task->fifo);
+			io_sti();
+			if (i <= 1) { /*光标用定时器*/
+				/*应用程序运行时不需要显示光标，因此总是将下次显示用的值置为1*/
+				timer_init(cons->timer, &task->fifo, 1); /*下次置为1*/
+				timer_settime(cons->timer, 50);
+			}
+			if (i == 2) { /*光标ON */
+				cons->cur_c = COL8_FFFFFF;
+			}
+			if (i == 3) { /*光标OFF */
+				cons->cur_c = -1;
+			}
+			if (256 <= i && i <= 511) { /*键盘数据（通过任务A）*/
+				reg[7] = i - 256;
+				return 0;
+			}
+		}
 	}
 	return 0;
 }
