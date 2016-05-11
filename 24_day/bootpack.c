@@ -42,6 +42,8 @@ void HariMain(void)
 	};
 	int key_to = 0, key_shift = 0, key_leds = (binfo->leds >> 4) & 7, keycmd_wait = -1;
 	struct CONSOLE *cons;
+	int j, x, y;
+	struct SHEET *sht;
 
 	init_gdtidt();
 	init_pic();
@@ -265,10 +267,23 @@ void HariMain(void)
 					if (my > binfo->scrny - 1) {
 						my = binfo->scrny - 1;
 					}
+					
 					sheet_slide(sht_mouse, mx, my);/* 包含sheet_refresh含sheet_refresh */
+
 					if ((mdec.btn & 0x01) != 0) { /* 按下左键、移动sht_win */
-						sheet_slide(sht_win, mx - 80, my - 8);
+						for (j = shtctl->top - 1; j > 0; j--) {
+							sht = shtctl->sheets[j];
+							x = mx - sht->vx0;
+							y = my - sht->vy0;
+							if (0 <= x && x < sht->bxsize && 0 <= y && y < sht->bysize) {
+								if (sht->buf[y * sht->bxsize + x] != sht->col_inv) {
+									sheet_updown(sht, shtctl->top - 1);
+									break;
+								}
+							}
+						}
 					}
+
 				}
 			} else if (i <= 1) { /* 光标用定时器*/
 				if (i != 0) {
