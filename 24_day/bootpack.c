@@ -5,6 +5,9 @@
 
 #define KEYCMD_LED		0xed
 
+int keywin_off(struct SHEET *key_win, struct SHEET *sht_win, int cur_c, int cur_x);
+int keywin_on(struct SHEET *key_win, struct SHEET *sht_win, int cur_c);
+
 void HariMain(void)
 {
 	struct BOOTINFO *binfo = (struct BOOTINFO *) ADR_BOOTINFO;
@@ -40,10 +43,10 @@ void HariMain(void)
 		0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
 		0,   0,   0,   '_', 0,   0,   0,   0,   0,   0,   0,   0,   0,   '|', 0,   0
 	};
-	int key_to = 0, key_shift = 0, key_leds = (binfo->leds >> 4) & 7, keycmd_wait = -1;
+	int key_shift = 0, key_leds = (binfo->leds >> 4) & 7, keycmd_wait = -1;
 	struct CONSOLE *cons;
 	int j, x, y, mmx = -1, mmy = -1;
-	struct SHEET *sht = 0;
+	struct SHEET *sht = 0, *key_win;
 
 	init_gdtidt();
 	init_pic();
@@ -120,6 +123,9 @@ void HariMain(void)
 	sheet_updown(sht_cons,  1);
 	sheet_updown(sht_win,   2);
 	sheet_updown(sht_mouse, 3);
+	key_win = sht_win;
+	sht_cons->task = task_cons;
+	sht_cons->flags |= 0x20; /*有光标*/
 
 	/*为了避免和键盘当前状态冲突，在一开始先进行设置*/
 	fifo32_put(&keycmd, KEYCMD_LED);
@@ -139,6 +145,10 @@ void HariMain(void)
 		} else {
 			i = fifo32_get(&fifo);
 			io_sti();
+			if (key_win->flags == 0) { /*输入窗口被关闭*/
+				key_win = shtctl->sheets[shtctl->top - 1];
+				cursor_c = keywin_on(key_win, sht_win, cursor_c);
+			}
 			if (256 <= i && i <= 511) { /* 键盘数据*/
 				if (i < 0x80 + 256) { /*将按键编码转换为字符编码*/
 					if (key_shift == 0) {
@@ -155,7 +165,7 @@ void HariMain(void)
 					}
 				}
 				if (s[0] != 0) { /*一般字符*/
-					if (key_to == 0) { /*发送给任务A */
+					if (key_win == sht_win) { /*发送给任务A */
 						if (cursor_x < 128) {
 							/*显示一个字符之后将光标后移一位*/
 							s[1] = 0;
@@ -163,42 +173,33 @@ void HariMain(void)
 							cursor_x += 8;
 						}
 					} else { /*发送给命令行窗口*/
-						fifo32_put(&task_cons->fifo, s[0] + 256);
+						fifo32_put(&key_win->task->fifo, s[0] + 256);
 					}
 				}
 				if (i == 256 + 0x0e) { /* 退格键 */
-					if (key_to == 0) { /*发送给任务A */
+					if (key_win == sht_win) { /*发送给任务A */
 						if (cursor_x > 8) {
 							/*用空白擦除光标后将光标前移一位*/
 							putfonts8_asc_sht(sht_win, cursor_x, 28, COL8_000000, COL8_FFFFFF, " ", 1);
 							cursor_x -= 8;
 						}
 					} else { /*发送给命令行窗口*/
-						fifo32_put(&task_cons->fifo, 8 + 256);
+						fifo32_put(&key_win->task->fifo, 8 + 256);
 					}
 				}
 				if (i == 256 + 0x1c) { /*回车键*/
-					if (key_to != 0) { /*发送至命令行窗口*/
-						fifo32_put(&task_cons->fifo, 10 + 256);
+					if (key_win != sht_win) { /*发送至命令行窗口*/
+						fifo32_put(&key_win->task->fifo, 10 + 256);
 					}
 				}
-				if (i == 256 + 0x0f) {	/* Tab */
-					if (key_to == 0) {
-						key_to = 1;
-						make_wtitle8(buf_win,  sht_win->bxsize,  "task_a",  0);
-						make_wtitle8(buf_cons, sht_cons->bxsize, "console", 1);
-						cursor_c = -1; /* 不显示光标 */
-						boxfill8(sht_win->buf, sht_win->bxsize, COL8_FFFFFF, cursor_x, 28, cursor_x + 7, 43);
-						fifo32_put(&task_cons->fifo, 2); /*命令行窗口光标ON */
-					} else {
-						key_to = 0;
-						make_wtitle8(buf_win,  sht_win->bxsize,  "task_a",  1);
-						make_wtitle8(buf_cons, sht_cons->bxsize, "console", 0);
-						cursor_c = COL8_000000;
-						fifo32_put(&task_cons->fifo, 3); /*命令行窗口光标OFF */
+				if (i == 256 + 0x0f) {	/* Tab键 */
+					cursor_c = keywin_off(key_win, sht_win, cursor_c, cursor_x);
+					j = key_win->height - 1;
+					if (j == 0) {
+						j = shtctl->top - 1;
 					}
-					sheet_refresh(sht_win,  0, 0, sht_win->bxsize,  21);
-					sheet_refresh(sht_cons, 0, 0, sht_cons->bxsize, 21);
+					key_win = shtctl->sheets[j];
+					cursor_c = keywin_on(key_win, sht_win, cursor_c);
 				}
 				if (i == 256 + 0x2a) { /*左Shift ON */
 					key_shift |= 1;
@@ -287,7 +288,7 @@ void HariMain(void)
 										}
 										if (sht->bxsize - 21 <= x && x < sht->bxsize - 5 && 5 <=y && y < 19) {
 											/*点击“×”按钮*/
-											if (sht->task != 0) { /*该窗口是否为应用程序窗口？*/
+											if ((sht->flags & 0x10) != 0) { /*该窗口是否为应用程序窗口？*/
 												cons = (struct CONSOLE *) *((int *) 0x0fec);
 												cons_putstr0(cons, "\nBreak(mouse) :\n");
 												io_cli(); /*强制结束处理中禁止切换任务*/
@@ -335,4 +336,31 @@ void HariMain(void)
 			}
 		}
 	}
+}
+
+int keywin_off(struct SHEET *key_win, struct SHEET *sht_win, int cur_c, int cur_x)
+{
+	change_wtitle8(key_win, 0);
+	if (key_win == sht_win) {
+		cur_c = -1; /*删除光标*/
+		boxfill8(sht_win->buf, sht_win->bxsize, COL8_FFFFFF, cur_x, 28, cur_x + 7, 43);
+	} else {
+		if ((key_win->flags & 0x20) != 0) {
+			fifo32_put(&key_win->task->fifo, 3); /*命令行窗口光标OFF */
+		}
+	}
+	return cur_c;
+}
+
+int keywin_on(struct SHEET *key_win, struct SHEET *sht_win, int cur_c)
+{
+	change_wtitle8(key_win, 1);
+	if (key_win == sht_win) {
+		cur_c = COL8_000000; /*显示光标*/
+	} else {
+		if ((key_win->flags & 0x20) != 0) {
+			fifo32_put(&key_win->task->fifo, 2); /*命令行窗口光标ON */
+		}
+	}
+	return cur_c;
 }
