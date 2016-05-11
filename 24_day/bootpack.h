@@ -176,7 +176,8 @@ void sheet_free(struct SHEET *sht);
 #define MAX_TIMER		500
 struct TIMER {
 	struct TIMER *next;
-	unsigned int timeout, flags;
+	unsigned int timeout;
+	char flags, flags2; 
 	struct FIFO32 *fifo;
 	int data;
 };
@@ -192,6 +193,8 @@ void timer_free(struct TIMER *timer);
 void timer_init(struct TIMER *timer, struct FIFO32 *fifo, int data);
 void timer_settime(struct TIMER *timer, unsigned int timeout);
 void inthandler20(int *esp);
+int timer_cancel(struct TIMER *timer);
+void timer_cancelall(struct FIFO32 *fifo);
 
 /* mtask.c */
 #define MAX_TASKS 1000	/*最大任务数量*/
