@@ -148,10 +148,17 @@ walk.bim : walk.obj a_nask.obj Makefile
 walk.hrb : walk.bim Makefile
 	$(BIM2HRB) walk.bim walk.hrb 48k
 
+noodle.bim : noodle.obj a_nask.obj Makefile
+	$(OBJ2BIM) @$(RULEFILE) out:noodle.bim stack:1k map:noodle.map \
+		noodle.obj a_nask.obj
+
+noodle.hrb : noodle.bim Makefile
+	$(BIM2HRB) noodle.bim noodle.hrb 40k
+
 haribote.img : ipl10.bin haribote.sys Makefile \
 		hello.hrb hello2.hrb a.hrb hello3.hrb hello4.hrb hello5.hrb \
 		winhelo.hrb winhelo2.hrb winhelo3.hrb star1.hrb stars.hrb stars2.hrb \
-		lines.hrb walk.hrb
+		lines.hrb walk.hrb noodle.hrb
 	$(EDIMG)   imgin:../z_tools/fdimg0at.tek \
 		wbinimg src:ipl10.bin len:512 from:0 to:0 \
 		copy from:haribote.sys to:@: \
@@ -171,6 +178,7 @@ haribote.img : ipl10.bin haribote.sys Makefile \
 		copy from:stars2.hrb to:@: \
 		copy from:lines.hrb to:@: \
 		copy from:walk.hrb to:@: \
+		copy from:noodle.hrb to:@: \
 		imgout:haribote.img
 
 # 其他指令
