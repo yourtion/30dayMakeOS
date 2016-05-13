@@ -212,6 +212,8 @@ struct TASK {
 	int level, priority; /* 优先级 */
 	struct FIFO32 fifo;
 	struct TSS32 tss;
+	struct CONSOLE *cons;
+	int ds_base;
 };
 struct TASKLEVEL {
 	int running; /*正在运行的任务数量*/
