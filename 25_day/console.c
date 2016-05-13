@@ -9,7 +9,7 @@ void console_task(struct SHEET *sheet, unsigned int memtotal)
 	struct TIMER *timer;
 	struct TASK *task = task_now();
 	struct MEMMAN *memman = (struct MEMMAN *) MEMMAN_ADDR;
-	int i, fifobuf[128], *fat = (int *) memman_alloc_4k(memman, 4 * 2880);
+	int i, *fat = (int *) memman_alloc_4k(memman, 4 * 2880);
 	struct CONSOLE cons;
 	char cmdline[30];
 	cons.sht = sheet;
@@ -18,7 +18,6 @@ void console_task(struct SHEET *sheet, unsigned int memtotal)
 	cons.cur_c = -1;
 	task->cons = &cons;
 
-	fifo32_init(&task->fifo, 128, fifobuf, task);
 	timer = timer_alloc();
 	timer_init(timer, &task->fifo, 1);
 	timer_settime(timer, 50);
