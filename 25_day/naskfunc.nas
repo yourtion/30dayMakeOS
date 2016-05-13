@@ -14,14 +14,14 @@
 		GLOBAL	_load_cr0, _store_cr0
 		GLOBAL	_load_tr
 		GLOBAL	_asm_inthandler20, _asm_inthandler21
-		GLOBAL	_asm_inthandler27, _asm_inthandler2c
-		GLOBAL	_asm_inthandler0c, _asm_inthandler0d
-		GLOBAL	_asm_end_app, _memtest_sub
+		GLOBAL	_asm_inthandler2c, _asm_inthandler0c
+		GLOBAL	_asm_inthandler0d, _asm_end_app
+		GLOBAL	_memtest_sub
 		GLOBAL	_farjmp, _farcall
 		GLOBAL	_asm_hrb_api, _start_app
 		EXTERN	_inthandler20, _inthandler21
-		EXTERN	_inthandler27, _inthandler2c
-		EXTERN	_inthandler0c, _inthandler0d
+		EXTERN	_inthandler2c, _inthandler0d
+		EXTERN	_inthandler0c
 		EXTERN	_hrb_api
 
 [SECTION .text]
@@ -79,14 +79,14 @@ _io_out32:	; void io_out32(int port, int data);
 		RET
 
 _io_load_eflags:	; int io_load_eflags(void);
-		PUSHFD		; PUSH EFLAGS 
+		PUSHFD		; PUSH EFLAGS
 		POP		EAX
 		RET
 
 _io_store_eflags:	; void io_store_eflags(int eflags);
 		MOV		EAX,[ESP+4]
 		PUSH	EAX
-		POPFD		; POP EFLAGS 
+		POPFD		; POP EFLAGS
 		RET
 
 _load_gdtr:		; void load_gdtr(int limit, int addr);
@@ -140,22 +140,6 @@ _asm_inthandler21:
 		MOV		DS,AX
 		MOV		ES,AX
 		CALL	_inthandler21
-		POP		EAX
-		POPAD
-		POP		DS
-		POP		ES
-		IRETD
-
-_asm_inthandler27:
-		PUSH	ES
-		PUSH	DS
-		PUSHAD
-		MOV		EAX,ESP
-		PUSH	EAX
-		MOV		AX,SS
-		MOV		DS,AX
-		MOV		ES,AX
-		CALL	_inthandler27
 		POP		EAX
 		POPAD
 		POP		DS
@@ -278,8 +262,8 @@ _asm_hrb_api:
 		IRETD
 _asm_end_app:
 ; EAX为tss.esp0的地址
-		MOV			ESP,[EAX]
-		MOV			DWORD [EAX+4],0
+		MOV		ESP,[EAX]
+		MOV		DWORD [EAX+4],0
 		POPAD
 		RET			; 返回cmd_app
 

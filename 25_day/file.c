@@ -7,7 +7,7 @@ void file_readfat(int *fat, unsigned char *img)
 {
 	int i, j = 0;
 	for (i = 0; i < 2880; i += 2) {
-		fat[i + 0] = (img[j + 0] | img[j + 1] << 8) & 0xfff;
+		fat[i + 0] = (img[j + 0]      | img[j + 1] << 8) & 0xfff;
 		fat[i + 1] = (img[j + 1] >> 4 | img[j + 2] << 4) & 0xfff;
 		j += 3;
 	}
@@ -51,12 +51,12 @@ struct FILEINFO *file_search(char *name, struct FILEINFO *finfo, int max)
 			if ('a' <= s[j] && s[j] <= 'z') {
 				/*将小写字母转换为大写字母*/
 				s[j] -= 0x20;
-			}
+			} 
 			j++;
 		}
 	}
 	for (i = 0; i < max; ) {
-		if (finfo[i].name[0] == 0x00) {
+		if (finfo->name[0] == 0x00) {
 			break;
 		}
 		if ((finfo[i].type & 0x18) == 0) {
@@ -67,8 +67,8 @@ struct FILEINFO *file_search(char *name, struct FILEINFO *finfo, int max)
 			}
 			return finfo + i; /*找到文件*/
 		}
-		next:
-			i++;
+next:
+		i++;
 	}
 	return 0; /*没有找到*/
 }

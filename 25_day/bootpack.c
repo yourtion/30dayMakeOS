@@ -14,17 +14,17 @@ void HariMain(void)
 	struct SHTCTL *shtctl;
 	char s[40];
 	struct FIFO32 fifo, keycmd;
-	int fifobuf[128], keycmd_buf[32], *cons_fifo[2]; 
+	int fifobuf[128], keycmd_buf[32], *cons_fifo[2];
 	int mx, my, i;
 	unsigned int memtotal;
 	struct MOUSE_DEC mdec;
 	struct MEMMAN *memman = (struct MEMMAN *) MEMMAN_ADDR;
 	unsigned char *buf_back, buf_mouse[256], *buf_cons[2];
-	struct SHEET *sht_back, *sht_mouse, *sht_win, *sht_cons[2];
+	struct SHEET *sht_back, *sht_mouse, *sht_cons[2];
 	struct TASK *task_a, *task_cons[2], *task;
 	static char keytable0[0x80] = {
-		0,   0,   '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '^', 0,   0,
-		'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', '@', '[', 0,   0,   'A', 'S',
+		0,   0,   '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '^', 0x08, 0,
+		'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', '@', '[', 0x0a, 0, 'A', 'S',
 		'D', 'F', 'G', 'H', 'J', 'K', 'L', ';', ':', 0,   0,   ']', 'Z', 'X', 'C', 'V',
 		'B', 'N', 'M', ',', '.', '/', 0,   '*', 0,   ' ', 0,   0,   0,   0,   0,   0,
 		0,   0,   0,   0,   0,   0,   0,   '7', '8', '9', '-', '4', '5', '6', '+', '1',
@@ -33,8 +33,8 @@ void HariMain(void)
 		0,   0,   0,   0x5c, 0,  0,   0,   0,   0,   0,   0,   0,   0,   0x5c, 0,  0
 	};
 	static char keytable1[0x80] = {
-		0,   0,   '!', 0x22, '#', '$', '%', '&', 0x27, '(', ')', '~', '=', '~', 0,   0,
-		'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', '`', '{', 0,   0,   'A', 'S',
+		0,   0,   '!', 0x22, '#', '$', '%', '&', 0x27, '(', ')', '~', '=', '~', 0x08, 0,
+		'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', '`', '{', 0x0a, 0, 'A', 'S',
 		'D', 'F', 'G', 'H', 'J', 'K', 'L', '+', '*', 0,   0,   '}', 'Z', 'X', 'C', 'V',
 		'B', 'N', 'M', '<', '>', '?', 0,   '*', 0,   ' ', 0,   0,   0,   0,   0,   0,
 		0,   0,   0,   0,   0,   0,   0,   '7', '8', '9', '-', '4', '5', '6', '+', '1',
@@ -43,7 +43,6 @@ void HariMain(void)
 		0,   0,   0,   '_', 0,   0,   0,   0,   0,   0,   0,   0,   0,   '|', 0,   0
 	};
 	int key_shift = 0, key_leds = (binfo->leds >> 4) & 7, keycmd_wait = -1;
-	struct CONSOLE *cons;
 	int j, x, y, mmx = -1, mmy = -1;
 	struct SHEET *sht = 0, *key_win;
 
@@ -109,15 +108,15 @@ void HariMain(void)
 	my = (binfo->scrny - 28 - 16) / 2;
 
 	sheet_slide(sht_back,  0,  0);
-	sheet_slide(sht_cons[1], 56, 6);
-	sheet_slide(sht_cons[0], 8, 2);
-	sheet_slide(sht_win,  64, 56);
+	sheet_slide(sht_cons[1], 56,  6);
+	sheet_slide(sht_cons[0],  8,  2);
 	sheet_slide(sht_mouse, mx, my);
-	sheet_updown(sht_back,  0);
-	sheet_updown(sht_cons[1], 1);
-	sheet_updown(sht_cons[0], 2);
-	sheet_updown(sht_mouse, 3);
+	sheet_updown(sht_back,     0);
+	sheet_updown(sht_cons[1],  1);
+	sheet_updown(sht_cons[0],  2);
+	sheet_updown(sht_mouse,    3);
 	key_win = sht_cons[0];
+	keywin_on(key_win);
 
 	/*为了避免和键盘当前状态冲突，在一开始先进行设置*/
 	fifo32_put(&keycmd, KEYCMD_LED);
@@ -125,7 +124,7 @@ void HariMain(void)
 
 	for (;;) {
 		if (fifo32_status(&keycmd) > 0 && keycmd_wait < 0) {
-			/*如果存在向键盘控制器发送的数据，则发送它 */
+			/* �L�[�{�[�h�R���g���[���ɑ���f�[�^������΁A���� */
 			keycmd_wait = fifo32_get(&keycmd);
 			wait_KBC_sendready();
 			io_out8(PORT_KEYDAT, keycmd_wait);
@@ -139,6 +138,7 @@ void HariMain(void)
 			io_sti();
 			if (key_win->flags == 0) { /*输入窗口被关闭*/
 				key_win = shtctl->sheets[shtctl->top - 1];
+				keywin_on(key_win);
 			}
 			if (256 <= i && i <= 511) { /* 键盘数据*/
 				if (i < 0x80 + 256) { /*将按键编码转换为字符编码*/
@@ -151,7 +151,8 @@ void HariMain(void)
 					s[0] = 0;
 				}
 				if ('A' <= s[0] && s[0] <= 'Z') { /*当输入字符为英文字母时*/
-					if (((key_leds & 4) == 0 && key_shift == 0) ||((key_leds & 4) != 0 && key_shift != 0)) {
+					if (((key_leds & 4) == 0 && key_shift == 0) ||
+							((key_leds & 4) != 0 && key_shift != 0)) {
 						s[0] += 0x20; /*将大写字母转换为小写字母*/
 					}
 				}
@@ -196,15 +197,15 @@ void HariMain(void)
 				}
 				if (i == 256 + 0x3b && key_shift != 0) {
 					task = key_win->task;
-					if (task != 0 && task->tss.ss0 != 0) { /* Shift+F1 */
-						cons_putstr0(cons, "\nBreak(key) :\n");
+					if (task != 0 && task->tss.ss0 != 0) {	/* Shift+F1 */
+						cons_putstr0(task->cons, "\nBreak(key) :\n");
 						io_cli(); /*强制结束处理时禁止任务切换*/
 						task->tss.eax = (int) &(task->tss.esp0);
 						task->tss.eip = (int) asm_end_app;
 						io_sti();
 					}
 				}
-				if (i == 256 + 0x57 && shtctl->top > 2) { /* F11 */
+				if (i == 256 + 0x57) {	/* F11 */
 					sheet_updown(shtctl->sheets[1], shtctl->top - 1);
 				}
 				if (i == 256 + 0xfa) { /*键盘成功接收到数据*/
@@ -231,9 +232,7 @@ void HariMain(void)
 					if (my > binfo->scrny - 1) {
 						my = binfo->scrny - 1;
 					}
-
 					sheet_slide(sht_mouse, mx, my);/* 包含sheet_refresh含sheet_refresh */
-
 					if ((mdec.btn & 0x01) != 0) { /* 按下左键 */
 						if (mmx < 0) {
 							/*如果处于通常模式*/
@@ -254,13 +253,13 @@ void HariMain(void)
 											mmx = mx; /*进入窗口移动模式*/
 											mmy = my;
 										}
-										if (sht->bxsize - 21 <= x && x < sht->bxsize - 5 && 5 <=y && y < 19) {
+										if (sht->bxsize - 21 <= x && x < sht->bxsize - 5 && 5 <= y && y < 19) {
 											/*点击“×”按钮*/
 											if ((sht->flags & 0x10) != 0) { /*该窗口是否为应用程序窗口？*/
 												task = sht->task;
-												cons_putstr0(cons, "\nBreak(mouse) :\n");
+												cons_putstr0(task->cons, "\nBreak(mouse) :\n");
 												io_cli(); /*强制结束处理时禁止任务切换*/
-												task->tss.eax = (int) &(task->tss.esp0);/*到此结束*/
+												task->tss.eax = (int) &(task->tss.esp0);
 												task->tss.eip = (int) asm_end_app;
 												io_sti();
 											}
@@ -279,9 +278,8 @@ void HariMain(void)
 						}
 					} else {
 						/*没有按下左键*/
-						mmx = -1; /*返回通常模式*/
+						mmx = -1;	/*返回通常模式*/
 					}
-
 				}
 			}
 		}

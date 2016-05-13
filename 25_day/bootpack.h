@@ -28,7 +28,6 @@ void asm_inthandler0c(void);
 void asm_inthandler0d(void);
 void asm_inthandler20(void);
 void asm_inthandler21(void);
-void asm_inthandler27(void);
 void asm_inthandler2c(void);
 unsigned int memtest_sub(unsigned int start, unsigned int end);
 void farjmp(int eip, int cs);
@@ -102,7 +101,6 @@ void set_gatedesc(struct GATE_DESCRIPTOR *gd, int offset, int selector, int ar);
 
 /* int.c */
 void init_pic(void);
-void inthandler27(int *esp);
 #define PIC0_ICW1		0x0020
 #define PIC0_OCW2		0x0020
 #define PIC0_IMR		0x0021
@@ -133,12 +131,12 @@ void enable_mouse(struct FIFO32 *fifo, int data0, struct MOUSE_DEC *mdec);
 int mouse_decode(struct MOUSE_DEC *mdec, unsigned char dat);
 
 /* memory.c */
-#define MEMMAN_FREES 4090 /* 大约是32KB*/
+#define MEMMAN_FREES		4090	/* ����Ŗ�32KB */
 #define MEMMAN_ADDR			0x003c0000
-struct FREEINFO { /* 可用信息 */
+struct FREEINFO {	/* ������� */
 	unsigned int addr, size;
 };
-struct MEMMAN { /* 内存管理 */
+struct MEMMAN {		/* �������Ǘ� */
 	int frees, maxfrees, lostsize, losts;
 	struct FREEINFO free[MEMMAN_FREES];
 };
@@ -177,7 +175,7 @@ void sheet_free(struct SHEET *sht);
 struct TIMER {
 	struct TIMER *next;
 	unsigned int timeout;
-	char flags, flags2; 
+	char flags, flags2;
 	struct FIFO32 *fifo;
 	int data;
 };
@@ -199,8 +197,8 @@ void timer_cancelall(struct FIFO32 *fifo);
 /* mtask.c */
 #define MAX_TASKS 1000	/*最大任务数量*/
 #define TASK_GDT0 3			/*定义从GDT的几号开始分配给TSS */
-#define MAX_TASKS_LV    100
-#define MAX_TASKLEVELS  10
+#define MAX_TASKS_LV	100
+#define MAX_TASKLEVELS	10
 struct TSS32 {
 	int backlink, esp0, ss0, esp1, ss1, esp2, ss2, cr3;
 	int eip, eflags, eax, ecx, edx, ebx, esp, ebp, esi, edi;
@@ -227,6 +225,7 @@ struct TASKCTL {
 	struct TASK tasks0[MAX_TASKS];
 };
 extern struct TIMER *task_timer;
+struct TASK *task_now(void);
 struct TASK *task_init(struct MEMMAN *memman);
 struct TASK *task_alloc(void);
 void task_run(struct TASK *task, int level, int priority);
@@ -246,20 +245,21 @@ struct CONSOLE {
 	int cur_x, cur_y, cur_c;
 	struct TIMER *timer;
 };
-void console_task(struct SHEET *sheet, unsigned int memtotal);
+void console_task(struct SHEET *sheet, int memtotal);
 void cons_putchar(struct CONSOLE *cons, int chr, char move);
 void cons_newline(struct CONSOLE *cons);
 void cons_putstr0(struct CONSOLE *cons, char *s);
 void cons_putstr1(struct CONSOLE *cons, char *s, int l);
-void cons_runcmd(char *cmdline, struct CONSOLE *cons, int *fat, unsigned int memtotal);
-void cmd_mem(struct CONSOLE *cons, unsigned int memtotal);
+void cons_runcmd(char *cmdline, struct CONSOLE *cons, int *fat, int memtotal);
+void cmd_mem(struct CONSOLE *cons, int memtotal);
 void cmd_cls(struct CONSOLE *cons);
 void cmd_dir(struct CONSOLE *cons);
 void cmd_type(struct CONSOLE *cons, int *fat, char *cmdline);
 int cmd_app(struct CONSOLE *cons, int *fat, char *cmdline);
 int *hrb_api(int edi, int esi, int ebp, int esp, int ebx, int edx, int ecx, int eax);
-int *inthandler0c(int *esp);
 int *inthandler0d(int *esp);
+int *inthandler0c(int *esp);
+void hrb_api_linewin(struct SHEET *sht, int x0, int y0, int x1, int y1, int col);
 
 /* file.c */
 struct FILEINFO {
@@ -271,3 +271,4 @@ struct FILEINFO {
 void file_readfat(int *fat, unsigned char *img);
 void file_loadfile(int clustno, int size, char *buf, int *fat, char *img);
 struct FILEINFO *file_search(char *name, struct FILEINFO *finfo, int max);
+

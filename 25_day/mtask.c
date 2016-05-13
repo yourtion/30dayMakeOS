@@ -163,6 +163,24 @@ void task_run(struct TASK *task, int level, int priority)
 	return;
 }
 
+void task_sleep(struct TASK *task)
+{
+	struct TASK *now_task;
+	if (task->flags == 2) {
+		/*如果处于活动状态*/
+		now_task = task_now();
+		task_remove(task); /*执行此语句的话flags将变为1 */
+		if (task == now_task) {
+			/*如果是让自己休眠，则需要进行任务切换*/
+			task_switchsub();
+			now_task = task_now(); /*在设定后获取当前任务的值*/
+			farjmp(0, now_task->sel);
+		}
+	}
+	return;
+}
+
+
 void task_switch(void)
 {
 	struct TASKLEVEL *tl = &taskctl->level[taskctl->now_lv];
@@ -179,23 +197,6 @@ void task_switch(void)
 	timer_settime(task_timer, new_task->priority);
 	if (new_task != now_task) {
 		farjmp(0, new_task->sel);
-	}
-	return;
-}
-
-void task_sleep(struct TASK *task)
-{
-	struct TASK *now_task;
-	if (task->flags == 2) {
-		/*如果处于活动状态*/
-		now_task = task_now();
-		task_remove(task); /*执行此语句的话flags将变为1 */
-		if (task == now_task) {
-			/*如果是让自己休眠，则需要进行任务切换*/
-			task_switchsub();
-			now_task = task_now(); /*在设定后获取当前任务的值*/
-			farjmp(0, now_task->sel);
-		}
 	}
 	return;
 }
