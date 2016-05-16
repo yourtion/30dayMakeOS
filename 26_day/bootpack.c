@@ -7,7 +7,6 @@
 
 void keywin_off(struct SHEET *key_win);
 void keywin_on(struct SHEET *key_win);
-struct SHEET *open_console(struct SHTCTL *shtctl, unsigned int memtotal);
 void close_console(struct SHEET *sht);
 void close_constask(struct TASK *task);
 
@@ -17,14 +16,14 @@ void HariMain(void)
 	struct SHTCTL *shtctl;
 	char s[40];
 	struct FIFO32 fifo, keycmd;
-	int fifobuf[128], keycmd_buf[32], *cons_fifo[2];
+	int fifobuf[128], keycmd_buf[32];
 	int mx, my, i, new_mx = -1, new_my = 0, new_wx = 0x7fffffff, new_wy = 0;
 	unsigned int memtotal;
 	struct MOUSE_DEC mdec;
 	struct MEMMAN *memman = (struct MEMMAN *) MEMMAN_ADDR;
-	unsigned char *buf_back, buf_mouse[256], *buf_cons[2];
+	unsigned char *buf_back, buf_mouse[256];
 	struct SHEET *sht_back, *sht_mouse;
-	struct TASK *task_a, *task_cons[2], *task;
+	struct TASK *task_a, *task;
 	static char keytable0[0x80] = {
 		0,   0,   '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '^', 0x08, 0,
 		'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', '@', '[', 0x0a, 0, 'A', 'S',
@@ -89,11 +88,11 @@ void HariMain(void)
 	mx = (binfo->scrnx - 16) / 2; /* 计算坐标使其位于画面中央 */
 	my = (binfo->scrny - 28 - 16) / 2;
 
-	sheet_slide(sht_back, 0, 0);
-	sheet_slide(key_win, 32, 4);
+	sheet_slide(sht_back,  0,  0);
+	sheet_slide(key_win,   32, 4);
 	sheet_slide(sht_mouse, mx, my);
-	sheet_updown(sht_back, 0);
-	sheet_updown(key_win, 1);
+	sheet_updown(sht_back,  0);
+	sheet_updown(key_win,   1);
 	sheet_updown(sht_mouse, 2);
 	keywin_on(key_win);
 
@@ -189,9 +188,9 @@ void HariMain(void)
 					fifo32_put(&keycmd, KEYCMD_LED);
 					fifo32_put(&keycmd, key_leds);
 				}
-				if (i == 256 + 0x3b && key_shift != 0 && key_win != 0) {
+				if (i == 256 + 0x3b && key_shift != 0 && key_win != 0) {	/* Shift+F1 */
 					task = key_win->task;
-					if (task != 0 && task->tss.ss0 != 0) {	/* Shift+F1 */
+					if (task != 0 && task->tss.ss0 != 0) {
 						cons_putstr0(task->cons, "\nBreak(key) :\n");
 						io_cli(); /*强制结束处理时禁止任务切换*/
 						task->tss.eax = (int) &(task->tss.esp0);
@@ -199,7 +198,7 @@ void HariMain(void)
 						io_sti();
 					}
 				}
-				if (i == 256 + 0x3c && key_shift != 0) { /* Shift+F2 */
+				if (i == 256 + 0x3c && key_shift != 0) {	/* Shift+F2 */
 					if (key_win != 0) {
 						keywin_off(key_win);
 					}
@@ -256,7 +255,7 @@ void HariMain(void)
 										if (3 <= x && x < sht->bxsize - 3 && 3 <= y && y < 21) {
 											mmx = mx; /*进入窗口移动模式*/
 											mmy = my;
-											mmx2 = sht->vx0; 
+											mmx2 = sht->vx0;
 											new_wy = sht->vy0;
 										}
 										if (sht->bxsize - 21 <= x && x < sht->bxsize - 5 && 5 <= y && y < 19) {
@@ -274,7 +273,7 @@ void HariMain(void)
 												fifo32_put(&task->fifo, 4);
 												io_sti();
 											}
-										} 
+										}
 										break;
 									}
 								}
@@ -284,7 +283,7 @@ void HariMain(void)
 							x = mx - mmx; /*计算鼠标指针移动量*/
 							y = my - mmy;
 							new_wx = (mmx2 + x + 2) & ~3;
-							new_wy = new_wy + y; 
+							new_wy = new_wy + y;
 							mmy = my;
 						}
 					} else {
@@ -293,11 +292,13 @@ void HariMain(void)
 						if (new_wx != 0x7fffffff) {
 							sheet_slide(sht, new_wx, new_wy); /*固定图层位置*/
 							new_wx = 0x7fffffff;
-						} 
+						}
 					}
 				}
 			} else if (768 <= i && i <= 1023) { /*命令行窗口关闭处理*/
 				close_console(shtctl->sheets0 + (i - 768));
+			} else if (1024 <= i && i <= 2023) {
+				close_constask(taskctl->tasks0 + (i - 1024));
 			}
 		}
 	}
@@ -321,19 +322,13 @@ void keywin_on(struct SHEET *key_win)
 	return;
 }
 
-struct SHEET *open_console(struct SHTCTL *shtctl, unsigned int memtotal)
+struct TASK *open_constask(struct SHEET *sht, unsigned int memtotal)
 {
 	struct MEMMAN *memman = (struct MEMMAN *) MEMMAN_ADDR;
-	struct SHEET *sht = sheet_alloc(shtctl);
-	unsigned char *buf = (unsigned char *) memman_alloc_4k(memman, 256 * 165);
 	struct TASK *task = task_alloc();
+	int *cons_fifo = (int *) memman_alloc_4k(memman, 128 * 4);
 	task->cons_stack = memman_alloc_4k(memman, 64 * 1024);
 	task->tss.esp = task->cons_stack + 64 * 1024 - 12;
-	int *cons_fifo = (int *) memman_alloc_4k(memman, 128 * 4);
-	sheet_setbuf(sht, buf, 256, 165, -1); /*无透明色*/
-	make_window8(buf, 256, 165, "console", 0);
-	make_textbox8(sht, 8, 28, 240, 128, COL8_000000);
-	task->tss.esp = memman_alloc_4k(memman, 64 * 1024) + 64 * 1024 - 12;
 	task->tss.eip = (int) &console_task;
 	task->tss.es = 1 * 8;
 	task->tss.cs = 2 * 8;
@@ -344,9 +339,20 @@ struct SHEET *open_console(struct SHTCTL *shtctl, unsigned int memtotal)
 	*((int *) (task->tss.esp + 4)) = (int) sht;
 	*((int *) (task->tss.esp + 8)) = memtotal;
 	task_run(task, 2, 2); /* level=2, priority=2 */
-	sht->task = task;
-	sht->flags |= 0x20;	/*有光标*/
 	fifo32_init(&task->fifo, 128, cons_fifo, task);
+	return task;
+}
+
+struct SHEET *open_console(struct SHTCTL *shtctl, unsigned int memtotal)
+{
+	struct MEMMAN *memman = (struct MEMMAN *) MEMMAN_ADDR;
+	struct SHEET *sht = sheet_alloc(shtctl);
+	unsigned char *buf = (unsigned char *) memman_alloc_4k(memman, 256 * 165);
+	sheet_setbuf(sht, buf, 256, 165, -1); /*无透明色*/
+	make_window8(buf, 256, 165, "console", 0);
+	make_textbox8(sht, 8, 28, 240, 128, COL8_000000);
+	sht->task = open_constask(sht, memtotal);
+	sht->flags |= 0x20;	/*有光标*/
 	return sht;
 }
 
