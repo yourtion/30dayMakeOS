@@ -43,7 +43,7 @@ void HariMain(void)
 		0,   0,   0,   '_', 0,   0,   0,   0,   0,   0,   0,   0,   0,   '|', 0,   0
 	};
 	int key_shift = 0, key_leds = (binfo->leds >> 4) & 7, keycmd_wait = -1;
-	int j, x, y, mmx = -1, mmy = -1;
+	int j, x, y, mmx = -1, mmy = -1, mmx2 = 0;
 	struct SHEET *sht = 0, *key_win;
 
 	init_gdtidt();
@@ -252,6 +252,7 @@ void HariMain(void)
 										if (3 <= x && x < sht->bxsize - 3 && 3 <= y && y < 21) {
 											mmx = mx; /*进入窗口移动模式*/
 											mmy = my;
+											mmx2 = sht->vx0; 
 										}
 										if (sht->bxsize - 21 <= x && x < sht->bxsize - 5 && 5 <= y && y < 19) {
 											/*点击“×”按钮*/
@@ -272,9 +273,8 @@ void HariMain(void)
 							/*如果处于窗口移动模式*/
 							x = mx - mmx; /*计算鼠标的移动距离*/
 							y = my - mmy;
-							sheet_slide(sht, sht->vx0 + x, sht->vy0 + y);
-							mmx = mx; /*更新为移动后的坐标*/
-							mmy = my;
+							sheet_slide(sht, (mmx2 + x + 2) & ~3, sht->vy0 + y);
+							mmy = my; /*更新到移动后的坐标*/
 						}
 					} else {
 						/*没有按下左键*/
