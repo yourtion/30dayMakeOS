@@ -116,7 +116,7 @@ void sheet_refreshmap(struct SHTCTL *ctl, int vx0, int vy0, int vx1, int vy1, in
 
 void sheet_refreshsub(struct SHTCTL *ctl, int vx0, int vy0, int vx1, int vy1, int h0, int h1)
 {
-	int h, bx, by, vx, vy, bx0, by0, bx1, by1;
+	int h, bx, by, vx, vy, bx0, by0, bx1, by1, bx2, sid4, i, i1, *p, *q, *r;
 	unsigned char *buf, *vram = ctl->vram, *map = ctl->map, sid;
 	struct SHEET *sht;
 
@@ -139,12 +139,63 @@ void sheet_refreshsub(struct SHTCTL *ctl, int vx0, int vy0, int vx1, int vy1, in
 		if (by0 < 0) { by0 = 0; }
 		if (bx1 > sht->bxsize) { bx1 = sht->bxsize; } /* 应对不同的重叠方式 */
 		if (by1 > sht->bysize) { by1 = sht->bysize; }
-		for (by = by0; by < by1; by++) {
-			vy = sht->vy0 + by;
-			for (bx = bx0; bx < bx1; bx++) {
+		if ((sht->vx0 & 3) == 0) {
+			/* 4字节型*/
+			i = (bx0 + 3) / 4; /* bx0除以4（小数进位）*/
+			i1 = bx1 / 4;      /* bx1除以4（小数舍去）*/
+			i1 = i1 - i;
+			sid4 = sid | sid << 8 | sid << 16 | sid << 24;
+			for (by = by0; by < by1; by++) {
+				vy = sht->vy0 + by;
+				for (bx = bx0; bx < bx1 && (bx & 3) != 0; bx++) { 
+					/*前面被4除多余的部分逐个字节写入*/
+					vx = sht->vx0 + bx;
+					if (map[vy * ctl->xsize + vx] == sid) {
+						vram[vy * ctl->xsize + vx] = buf[by * sht->bxsize + bx];
+					}
+				}
 				vx = sht->vx0 + bx;
-				if (map[vy * ctl->xsize + vx] == sid) {
-					vram[vy * ctl->xsize + vx] = buf[by * sht->bxsize + bx];
+				p = (int *) &map[vy * ctl->xsize + vx];
+				q = (int *) &vram[vy * ctl->xsize + vx];
+				r = (int *) &buf[by * sht->bxsize + bx];
+				for (i = 0; i < i1; i++) { 
+					/* 4的倍数部分*/
+					if (p[i] == sid4) {
+						q[i] = r[i]; /*估计大多数会是这种情况，因此速度会变快*/
+					} else {
+						bx2 = bx + i * 4;
+						vx = sht->vx0 + bx2;
+						if (map[vy * ctl->xsize + vx + 0] == sid) {
+							vram[vy * ctl->xsize + vx + 0] = buf[by * sht->bxsize + bx2 + 0];
+						}
+						if (map[vy * ctl->xsize + vx + 1] == sid) {
+							vram[vy * ctl->xsize + vx + 1] = buf[by * sht->bxsize + bx2 + 1];
+						}
+						if (map[vy * ctl->xsize + vx + 2] == sid) {
+							vram[vy * ctl->xsize + vx + 2] = buf[by * sht->bxsize + bx2 + 2];
+						}
+						if (map[vy * ctl->xsize + vx + 3] == sid) {
+							vram[vy * ctl->xsize + vx + 3] = buf[by * sht->bxsize + bx2 + 3];
+						}
+					}
+				}
+				for (bx += i1 * 4; bx < bx1; bx++) { 
+					/*后面被4除多余的部分逐个字节写入*/
+					vx = sht->vx0 + bx;
+					if (map[vy * ctl->xsize + vx] == sid) {
+						vram[vy * ctl->xsize + vx] = buf[by * sht->bxsize + bx];
+					}
+				}
+			}
+		} else {
+			/* 1字节型*/
+			for (by = by0; by < by1; by++) {
+				vy = sht->vy0 + by;
+				for (bx = bx0; bx < bx1; bx++) {
+					vx = sht->vx0 + bx;
+					if (map[vy * ctl->xsize + vx] == sid) {
+						vram[vy * ctl->xsize + vx] = buf[by * sht->bxsize + bx];
+					}
 				}
 			}
 		}
