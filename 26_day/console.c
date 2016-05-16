@@ -54,6 +54,9 @@ void console_task(struct SHEET *sheet, int memtotal)
 				boxfill8(sheet->buf, sheet->bxsize, COL8_000000, cons.cur_x, cons.cur_y, cons.cur_x + 7, cons.cur_y + 15);
 				cons.cur_c = -1;
 			}
+			if (i == 4) { /*点击命令行窗口的“×”按钮*/ 
+				cmd_exit(&cons, fat);
+			}
 			if (256 <= i && i <= 511) { /*键盘数据（通过任务A）*/
 				if (i == 8 + 256) {
 					/*退格键*/
