@@ -124,7 +124,7 @@ void HariMain(void)
 
 	for (;;) {
 		if (fifo32_status(&keycmd) > 0 && keycmd_wait < 0) {
-			/* �L�[�{�[�h�R���g���[���ɑ���f�[�^������΁A���� */
+			/* 如果存在向键盘控制器发送的数据，则发送它 */
 			keycmd_wait = fifo32_get(&keycmd);
 			wait_KBC_sendready();
 			io_out8(PORT_KEYDAT, keycmd_wait);
