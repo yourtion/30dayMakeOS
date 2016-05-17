@@ -195,6 +195,7 @@ void HariMain(void)
 						io_cli(); /*强制结束处理时禁止任务切换*/
 						task->tss.eax = (int) &(task->tss.esp0);
 						task->tss.eip = (int) asm_end_app;
+						task_run(task, -1, 0); /*为了确实执行结束处理，如果处于休眠状态则唤醒*/
 						io_sti();
 					}
 				}
@@ -266,6 +267,7 @@ void HariMain(void)
 												io_cli(); /*强制结束处理时禁止任务切换*/
 												task->tss.eax = (int) &(task->tss.esp0);
 												task->tss.eip = (int) asm_end_app;
+												task_run(task, -1, 0);
 												io_sti();
 											} else { /*命令行窗口*/
 												task = sht->task;
