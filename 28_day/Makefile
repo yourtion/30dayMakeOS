@@ -25,7 +25,7 @@ haribote.img : haribote/ipl10.bin haribote/haribote.sys Makefile \
 	$(EDIMG)   imgin:../z_tools/fdimg0at.tek \
 		wbinimg src:haribote/ipl10.bin len:512 from:0 to:0 \
 		copy from:haribote/haribote.sys to:@: \
-		copy from:haribote/ipl10.nas to:@: \
+		copy from:haribote/jp.nas to:@: \
 		copy from:make.bat to:@: \
 		copy from:a/a.hrb to:@: \
 		copy from:hello3/hello3.hrb to:@: \

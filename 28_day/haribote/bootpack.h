@@ -217,7 +217,7 @@ struct TASK {
 	struct FILEHANDLE *fhandle;
 	int *fat;
 	char *cmdline;
-	char langmode;
+	unsigned char langmode, langbyte1;
 };
 struct TASKLEVEL {
 	int running; /*正在运行的任务数量*/
