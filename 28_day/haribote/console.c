@@ -334,7 +334,7 @@ void cmd_langmode(struct CONSOLE *cons, char *cmdline)
 {
 	struct TASK *task = task_now();
 	unsigned char mode = cmdline[9] - '0';
-	if (mode <= 1) {
+	if (mode <= 2) {
 		task->langmode = mode;
 	} else {
 		cons_putstr0(cons, "mode number error.\n");
@@ -620,6 +620,8 @@ int *hrb_api(int edi, int esi, int ebp, int esp, int ebx, int edx, int ecx, int 
 			i++;
 		}
 		reg[7] = i;
+	} else if (edx == 27) {
+		reg[7] = task->langmode;
 	}
 	return 0;
 }
