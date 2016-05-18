@@ -108,9 +108,19 @@ void putfonts8_asc(char *vram, int xsize, int x, int y, char c, unsigned char *s
 {
 	extern char hankaku[4096];
 	/* C语言中，字符串都是以0x00结尾 */
-	for (; *s != 0x00; s++) {
-		putfont8(vram, xsize, x, y, c, hankaku + *s * 16);
-		x += 8;
+	struct TASK *task = task_now();
+	char *nihongo = (char *) *((int *) 0x0fe8);
+	if (task->langmode == 0) {
+		for (; *s != 0x00; s++) {
+			putfont8(vram, xsize, x, y, c, hankaku + *s * 16);
+			x += 8;
+		}
+	}
+	if (task->langmode == 1) {
+		for (; *s != 0x00; s++) {
+			putfont8(vram, xsize, x, y, c, nihongo + *s * 16);
+			x += 8;
+		}
 	}
 	return;
 }
