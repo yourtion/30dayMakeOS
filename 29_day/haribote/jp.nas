@@ -1,7 +1,7 @@
 ; haribote-ipl
 ; TAB=4
 
-CYLS	EQU		10				; ‚Ç‚±‚Ü‚Å“Ç‚Ýž‚Þ‚©
+CYLS	EQU		20				; ‚Ç‚±‚Ü‚Å“Ç‚Ýž‚Þ‚©
 
 		ORG		0x7c00			; ‚±‚ÌƒvƒƒOƒ‰ƒ€‚ª‚Ç‚±‚É“Ç‚Ýž‚Ü‚ê‚é‚Ì‚©
 
