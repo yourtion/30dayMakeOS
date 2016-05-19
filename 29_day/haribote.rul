@@ -1,0 +1,10 @@
+format:
+	code(align:1, logic:0x24,      file:0x24);
+	data(align:4, logic:stack_end, file:code_end);
+
+file:
+	../../z_tools/haribote/harilibc.lib;
+	../../z_tools/haribote/golibc.lib;
+
+label:
+	_HariStartup;
