@@ -1,7 +1,7 @@
-#include "apilib.h"
+#include "stdlib.h"
 
 void HariMain(void)
 {
-	api_putstr0("hello, world\n");
-	api_end();
+	printf("hello, world : %s %d\n", "aaa", 10);
+	exit(0);
 }

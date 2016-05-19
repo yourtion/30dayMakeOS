@@ -1,6 +1,7 @@
 TOOLPATH = ../../z_tools/
 INCPATH  = ../../z_tools/haribote/
 APILIBPATH   = ../apilib/
+STDLIBPATH   = ../stdlib/
 HARIBOTEPATH = ../haribote/
 
 MAKE     = $(TOOLPATH)make.exe -r
@@ -26,9 +27,13 @@ default :
 
 #文件生成规则
 
-$(APP).bim : $(APP).obj $(APILIBPATH)apilib.lib Makefile ../app_make.txt
+$(APP).bim : $(APP).obj $(APILIBPATH)apilib.lib $(STDLIBPATH)stdlib.lib Makefile ../app_make.txt
 	$(OBJ2BIM) @$(RULEFILE) out:$(APP).bim map:$(APP).map stack:$(STACK) \
-		$(APP).obj $(APILIBPATH)apilib.lib
+		$(APP).obj $(APILIBPATH)apilib.lib $(STDLIBPATH)stdlib.lib
+
+$(STDAPP).bim : $(APP).obj $(STDLIBPATH)stdlib.lib Makefile ../app_make.txt
+	$(OBJ2BIM) @$(RULEFILE) out:$(APP).bim map:$(APP).map stack:$(STACK) \
+		$(APP).obj $(STDLIBPATH)stdlib.lib
 
 haribote.img : ../haribote/ipl20.bin ../haribote/haribote.sys $(APP).hrb \
 		Makefile ../app_make.txt
@@ -41,7 +46,7 @@ haribote.img : ../haribote/ipl20.bin ../haribote/haribote.sys $(APP).hrb \
 
 #一般规则
 
-%.gas : %.c ../apilib.h Makefile ../app_make.txt
+%.gas : %.c ../apilib.h  ../stdlib.h Makefile ../app_make.txt
 	$(CC1) -o $*.gas $*.c
 
 %.nas : %.gas Makefile ../app_make.txt
@@ -65,10 +70,12 @@ run :
 
 full :
 	$(MAKE) -C $(APILIBPATH)
+	$(MAKE) -C $(STDLIBPATH)
 	$(MAKE) $(APP).hrb
 
 run_full :
 	$(MAKE) -C $(APILIBPATH)
+	$(MAKE) -C $(STDLIBPATH)
 	$(MAKE) -C ../haribote
 	$(MAKE) run
 
