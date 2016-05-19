@@ -11,6 +11,7 @@ OBJ2BIM  = $(TOOLPATH)obj2bim.exe
 MAKEFONT = $(TOOLPATH)makefont.exe
 BIN2OBJ  = $(TOOLPATH)bin2obj.exe
 BIM2HRB  = $(TOOLPATH)bim2hrb.exe
+BIM2BIN  = $(TOOLPATH)bim2bin.exe
 RULEFILE = ../haribote.rul
 EDIMG    = $(TOOLPATH)edimg.exe
 IMGTOL   = $(TOOLPATH)imgtol.com
@@ -29,15 +30,13 @@ $(APP).bim : $(APP).obj $(APILIBPATH)apilib.lib Makefile ../app_make.txt
 	$(OBJ2BIM) @$(RULEFILE) out:$(APP).bim map:$(APP).map stack:$(STACK) \
 		$(APP).obj $(APILIBPATH)apilib.lib
 
-$(APP).hrb : $(APP).bim Makefile ../app_make.txt
-	$(BIM2HRB) $(APP).bim $(APP).hrb $(MALLOC)
-
-haribote.img : ../haribote/ipl10.bin ../haribote/haribote.sys $(APP).hrb \
+haribote.img : ../haribote/ipl20.bin ../haribote/haribote.sys $(APP).hrb \
 		Makefile ../app_make.txt
 	$(EDIMG)   imgin:../../z_tools/fdimg0at.tek \
-		wbinimg src:../haribote/ipl10.bin len:512 from:0 to:0 \
+		wbinimg src:../haribote/ipl20.bin len:512 from:0 to:0 \
 		copy from:../haribote/haribote.sys to:@: \
 		copy from:$(APP).hrb to:@: \
+		copy from:../nihongo/nihongo.fnt to:@: \
 		imgout:haribote.img
 
 #一般规则
@@ -50,6 +49,12 @@ haribote.img : ../haribote/ipl10.bin ../haribote/haribote.sys $(APP).hrb \
 
 %.obj : %.nas Makefile ../app_make.txt
 	$(NASK) $*.nas $*.obj $*.lst
+
+%.org : %.bim Makefile ../app_make.txt
+	$(BIM2HRB) $*.bim $*.org $(MALLOC)
+
+%.hrb : %.org Makefile ../app_make.txt
+	$(BIM2BIN) -osacmp in:$*.org out:$*.hrb
 
 #命令
 
@@ -72,6 +77,7 @@ clean :
 	-$(DEL) *.obj
 	-$(DEL) *.map
 	-$(DEL) *.bim
+	-$(DEL) *.org
 	-$(DEL) haribote.img
 
 src_only :
