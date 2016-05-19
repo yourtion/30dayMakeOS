@@ -49,6 +49,7 @@ haribote.img : haribote/ipl20.bin haribote/haribote.sys Makefile \
 		copy from:type/type.hrb to:@: \
 		copy from:iroha/iroha.hrb to:@: \
 		copy from:chklang/chklang.hrb to:@: \
+		copy from:notrec/notrec.hrb to:@: \
 		copy from:euc.txt to:@: \
 		copy from:nihongo/nihongo.fnt to:@: \
 		imgout:haribote.img
@@ -90,6 +91,7 @@ full :
 	$(MAKE) -C type
 	$(MAKE) -C iroha
 	$(MAKE) -C chklang
+	$(MAKE) -C notrec
 	$(MAKE) haribote.img
 
 run_full :
@@ -138,6 +140,7 @@ clean_full :
 	$(MAKE) -C type				clean
 	$(MAKE) -C iroha			clean
 	$(MAKE) -C chklang		clean
+	$(MAKE) -C notrec			clean
 
 src_only_full :
 	$(MAKE) -C haribote		src_only
@@ -165,6 +168,7 @@ src_only_full :
 	$(MAKE) -C type				src_only
 	$(MAKE) -C iroha			src_only
 	$(MAKE) -C chklang		src_only
+	$(MAKE) -C notrec			src_only
 	-$(DEL) haribote.img
 
 refresh :
