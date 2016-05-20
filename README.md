@@ -1,9 +1,8 @@
-30dayMakeOS —— OSASK
+《30天自制操作系统》中文源码 —— OSASK
+
 ===========
 
-《30天自制操作系统》源码中文版。自己制作一个操作系统的过程
-
-阅读过程会一边汉化源码，一边执行还有根据一些相关的内容进行代码的书写，欢迎大家交流。
+自己制作一个操作系统的过程，阅读过程会一边汉化源码，一边执行还有根据一些相关的内容进行代码的书写，欢迎大家交流。
 
 运行方法，在 `tolset` 中新建一个 `run` 文件夹，把代码拷贝进去，然后根据系统版本运行 `!cons_**.bat`。
 
@@ -53,22 +52,3 @@
 
 剩下的两天用来润色加工。这两天我们来做一些之前没来得及做，但做起来既简单又有趣的内容。
 
-### Links
-
-[川合堂](http://www.imasy.org/~mone/kawaido/)
-
-[kawai](http://www.imasy.org/~kawai/)
-
-[豆瓣图书链接](http://book.douban.com/subject/11530329/)
-
-[OSASK计划](http://http://osask.net/)
-
-[OSASK wiki](http://ja.wikipedia.org/wiki/OSASK)
-
-[source code at sourceforge](http://zh.sourceforge.jp/projects/osask/releases/?package_id=10517)
-
-### 工具软件使用
-
-[GNU GPL协议](http://www.gnu.org/licenses/gpl-3.0.html)
-
-[GNU LGPL协议](http://www.gnu.org/licenses/lgpl-3.0.html)
