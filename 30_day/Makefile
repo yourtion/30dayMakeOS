@@ -71,6 +71,7 @@ install :
 full :
 	$(MAKE) -C haribote
 	$(MAKE) -C apilib
+	$(MAKE) -C stdlib
 	$(MAKE) -C a
 	$(MAKE) -C hello3
 	$(MAKE) -C hello4
@@ -121,6 +122,7 @@ src_only :
 clean_full :
 	$(MAKE) -C haribote		clean
 	$(MAKE) -C apilib		clean
+	$(MAKE) -C stdlib		clean
 	$(MAKE) -C a			clean
 	$(MAKE) -C hello3		clean
 	$(MAKE) -C hello4		clean
@@ -150,6 +152,7 @@ clean_full :
 src_only_full :
 	$(MAKE) -C haribote		src_only
 	$(MAKE) -C apilib		src_only
+	$(MAKE) -C stdlib		src_only
 	$(MAKE) -C a			src_only
 	$(MAKE) -C hello3		src_only
 	$(MAKE) -C hello4		src_only
