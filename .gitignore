@@ -1,1 +1,6 @@
 *.hrb
+*.lst
+*.obj
+*.map
+*.bim
+*.hrb
