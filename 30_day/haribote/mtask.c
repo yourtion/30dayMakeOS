@@ -1,4 +1,4 @@
-/* 多任务管理 */
+/* �}���`�^�X�N�֌W */
 
 #include "bootpack.h"
 
@@ -16,7 +16,7 @@ void task_add(struct TASK *task)
 	struct TASKLEVEL *tl = &taskctl->level[task->level];
 	tl->tasks[tl->running] = task;
 	tl->running++;
-	task->flags = 2; /*活动中*/
+	task->flags = 2; /* ���쒆 */
 	return;
 }
 
@@ -25,38 +25,39 @@ void task_remove(struct TASK *task)
 	int i;
 	struct TASKLEVEL *tl = &taskctl->level[task->level];
 
-	/*寻找task所在的位置*/
+	/* task���ǂ��ɂ��邩��T�� */
 	for (i = 0; i < tl->running; i++) {
 		if (tl->tasks[i] == task) {
-			/*在这里 */
+			/* �����ɂ��� */
 			break;
 		}
 	}
 
 	tl->running--;
 	if (i < tl->now) {
-		tl->now--; /*需要移动成员，要相应地处理 */
+		tl->now--; /* �����̂ŁA��������킹�Ă��� */
 	}
 	if (tl->now >= tl->running) {
-		/*如果now的值出现异常，则进行修正*/
+		/* now���������Ȓl�ɂȂ��Ă�����A�C������ */
 		tl->now = 0;
 	}
-	task->flags = 1; /* 休眠中 */
+	task->flags = 1; /* �X���[�v�� */
 
-	/* 移动 */
+	/* ���炵 */
 	for (; i < tl->running; i++) {
 		tl->tasks[i] = tl->tasks[i + 1];
 	}
+
 	return;
 }
 
 void task_switchsub(void)
 {
 	int i;
-	/*寻找最上层的LEVEL */
+	/* ��ԏ�̃��x����T�� */
 	for (i = 0; i < MAX_TASKLEVELS; i++) {
 		if (taskctl->level[i].running > 0) {
-			break; /*找到了*/
+			break; /* �������� */
 		}
 	}
 	taskctl->now_lv = i;
@@ -77,7 +78,6 @@ struct TASK *task_init(struct MEMMAN *memman)
 	struct TASK *task, *idle;
 	struct SEGMENT_DESCRIPTOR *gdt = (struct SEGMENT_DESCRIPTOR *) ADR_GDT;
 
-
 	taskctl = (struct TASKCTL *) memman_alloc_4k(memman, sizeof (struct TASKCTL));
 	for (i = 0; i < MAX_TASKS; i++) {
 		taskctl->tasks0[i].flags = 0;
@@ -92,11 +92,11 @@ struct TASK *task_init(struct MEMMAN *memman)
 	}
 
 	task = task_alloc();
-	task->flags = 2; /*活动中标志*/
-	task->priority = 2; /* 0.02秒*/
-	task->level = 0; /*最高LEVEL */
+	task->flags = 2;	/* ���쒆�}�[�N */
+	task->priority = 2; /* 0.02�b */
+	task->level = 0;	/* �ō����x�� */
 	task_add(task);
-	task_switchsub(); /* LEVEL 设置*/
+	task_switchsub();	/* ���x���ݒ� */
 	load_tr(task->sel);
 	task_timer = timer_alloc();
 	timer_settime(task_timer, task->priority);
@@ -151,7 +151,8 @@ void task_run(struct TASK *task, int level, int priority)
 	if (priority > 0) {
 		task->priority = priority;
 	}
-	if (task->flags == 2 && task->level != level) { 
+
+	if (task->flags == 2 && task->level != level) {
 		/*改变活动中的LEVEL */
 		task_remove(task); /*这里执行之后flag的值会变为1，于是下面的if语句块也会被执行*/
 	}
@@ -160,6 +161,7 @@ void task_run(struct TASK *task, int level, int priority)
 		task->level = level;
 		task_add(task);
 	}
+
 	taskctl->lv_change = 1; /*下次任务切换时检查LEVEL */
 	return;
 }
@@ -180,7 +182,6 @@ void task_sleep(struct TASK *task)
 	}
 	return;
 }
-
 
 void task_switch(void)
 {

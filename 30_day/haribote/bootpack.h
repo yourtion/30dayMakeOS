@@ -88,16 +88,16 @@ struct GATE_DESCRIPTOR {
 void init_gdtidt(void);
 void set_segmdesc(struct SEGMENT_DESCRIPTOR *sd, unsigned int limit, int base, int ar);
 void set_gatedesc(struct GATE_DESCRIPTOR *gd, int offset, int selector, int ar);
-#define ADR_IDT				0x0026f800
-#define LIMIT_IDT			0x000007ff
-#define ADR_GDT				0x00270000
-#define LIMIT_GDT			0x0000ffff
+#define ADR_IDT			0x0026f800
+#define LIMIT_IDT		0x000007ff
+#define ADR_GDT			0x00270000
+#define LIMIT_GDT		0x0000ffff
 #define ADR_BOTPAK		0x00280000
 #define LIMIT_BOTPAK	0x0007ffff
 #define AR_DATA32_RW	0x4092
 #define AR_CODE32_ER	0x409a
-#define AR_LDT				0x0082
-#define AR_TSS32			0x0089
+#define AR_LDT			0x0082
+#define AR_TSS32		0x0089
 #define AR_INTGATE32	0x008e
 
 /* int.c */
@@ -288,10 +288,10 @@ void file_loadfile(int clustno, int size, char *buf, int *fat, char *img);
 struct FILEINFO *file_search(char *name, struct FILEINFO *finfo, int max);
 char *file_loadfile2(int clustno, int *psize, int *fat);
 
-/* bootpack.c */
-struct TASK *open_constask(struct SHEET *sht, unsigned int memtotal);
-struct SHEET *open_console(struct SHTCTL *shtctl, unsigned int memtotal);
-
 /* tek.c */
 int tek_getsize(unsigned char *p);
 int tek_decomp(unsigned char *p, char *q, int size);
+
+/* bootpack.c */
+struct TASK *open_constask(struct SHEET *sht, unsigned int memtotal);
+struct SHEET *open_console(struct SHTCTL *shtctl, unsigned int memtotal);

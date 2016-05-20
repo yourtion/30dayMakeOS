@@ -231,7 +231,7 @@ static int tek_decode2(int siz, UCHAR *p, UCHAR *q)
 		if (dsiz > bsiz || (hed & 0x21) != 0x01)
 			return 1;
 		if (hed & 0x40)
-			tek_getnum_s7s(&p); 
+			tek_getnum_s7s(&p); /* �I�v�V�������ւ̃|�C���^��ǂݔ�΂� */
 		st = tek_lzrestore_stk2(p1 - p, p, dsiz, q);
 	}
 	return st;
@@ -278,7 +278,7 @@ static int tek_lzrestore_tek5(int srcsiz, UCHAR *src, int outsiz, UCHAR *outbuf)
 		lp = pb;
 		pb = wrksiz;
 	}
-	wrksiz = 0x180 * sizeof (UINT32) + (0x840 + (0x300 << (lc + lp))) * sizeof (tek_TPRB); /* Å’á15KB, lc+lp=3‚È‚çA36KB */
+	wrksiz = 0x180 * sizeof (UINT32) + (0x840 + (0x300 << (lc + lp))) * sizeof (tek_TPRB); /* �Œ�15KB, lc+lp=3�Ȃ�A36KB */
 	work = (int *) memman_alloc_4k((struct MEMMAN *) MEMMAN_ADDR, wrksiz);
 	if (work == NULL)
 		return -1;
@@ -457,7 +457,7 @@ static int tek_decmain5(int *work, UCHAR *src, int osiz, UCHAR *q, int lc, int p
 	for (i = sizeof (struct tek_STR_PRB) / sizeof (tek_TPRB) + (0x300 << (lc + lp)) - 2; i >= 0; i--)
 		((tek_TPRB *) prb)[i] = 1 << 15;
 	for (i = 0; i < 32; i++) {
-		rd->bm[i].lt = (i >= 4);
+		rd->bm[i].lt = (i >= 4); /* 0..3�͎����Ȃ� */
 		rd->bm[i].lt0 = (i < 24) ? 16 * 1024 : 8 * 1024;
 		rd->bm[i].s &= 0;
 		rd->bm[i].t = rd->bm[i].m = 5;
@@ -466,7 +466,7 @@ static int tek_decmain5(int *work, UCHAR *src, int osiz, UCHAR *q, int lc, int p
 	if (stk) {
 		rd->rmsk = -1 << 11;
 		for (i = 0; i < 32; i++)
-			rd->bm[i].lt = 0;
+			rd->bm[i].lt = 0; /* �S�Ď����Ȃ� */
 		for (i = 0; i < 14; i++)
 			rd->ptbm[i] = &rd->bm[0];
 	} else {
@@ -493,7 +493,7 @@ static int tek_decmain5(int *work, UCHAR *src, int osiz, UCHAR *q, int lc, int p
 		rd->bm[22].t = 0; rd->bm[22].m = 1;
 		prb->repg3 = 0xffff;
 		if (flags == -2) { /* z1 */
-			rd->bm[22].lt = 0;
+			rd->bm[22].lt = 0; /* repg3��lt��0�� */
 			for (i = 0; i < 14; i++)
 				pt[i] = pt1[i];
 		} else {

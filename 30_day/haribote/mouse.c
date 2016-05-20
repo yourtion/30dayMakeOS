@@ -16,8 +16,8 @@ void inthandler2c(int *esp)
 	return;
 }
 
-#define KEYCMD_SENDTO_MOUSE   0xd4
-#define MOUSECMD_ENABLE     0xf4
+#define KEYCMD_SENDTO_MOUSE		0xd4
+#define MOUSECMD_ENABLE			0xf4
 
 void enable_mouse(struct FIFO32 *fifo, int data0, struct MOUSE_DEC *mdec)
 {
@@ -31,7 +31,7 @@ void enable_mouse(struct FIFO32 *fifo, int data0, struct MOUSE_DEC *mdec)
 	io_out8(PORT_KEYDAT, MOUSECMD_ENABLE);
 	/* 顺利的话，ACK(0xfa)会被发送*/
 	mdec->phase = 0; /* 等待鼠标的0xfa的阶段*/
-return;
+	return;
 }
 
 int mouse_decode(struct MOUSE_DEC *mdec, unsigned char dat)
@@ -40,13 +40,15 @@ int mouse_decode(struct MOUSE_DEC *mdec, unsigned char dat)
 		/* 等待鼠标的0xfa的阶段 */
 		if (dat == 0xfa) {
 			mdec->phase = 1;
-		}        
+		}
 		return 0;
 	}
 	if (mdec->phase == 1) {
 		/* 等待鼠标第一字节的阶段 */
-		mdec->buf[0] = dat;
-		mdec->phase = 2;
+		if ((dat & 0xc8) == 0x08) {
+			mdec->buf[0] = dat;
+			mdec->phase = 2;
+		}
 		return 0;
 	}
 	if (mdec->phase == 2) {
@@ -67,7 +69,7 @@ int mouse_decode(struct MOUSE_DEC *mdec, unsigned char dat)
 		}
 		if ((mdec->buf[0] & 0x20) != 0) {
 			mdec->y |= 0xffffff00;
-		}      
+		}
 		mdec->y = - mdec->y; /* 鼠标的y方向与画面符号相反 */  
 		return 1;
 	}

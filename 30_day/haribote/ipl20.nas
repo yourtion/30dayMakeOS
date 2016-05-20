@@ -43,10 +43,8 @@ entry:
 		MOV		CH,0			; 柱面0
 		MOV		DH,0			; 磁头0
 		MOV		CL,2			; 扇区2
-
 readloop:
 		MOV		SI,0			; 记录失败次数寄存器
-
 retry:
 		MOV		AH,0x02			; AH=0x02 : 读入磁盘
 		MOV		AL,1			; 1个扇区
@@ -82,8 +80,9 @@ next:
 		JMP		0xc200
 
 error:
+		MOV		AX,0
+		MOV		ES,AX
 		MOV		SI,msg
-
 putloop:
 		MOV		AL,[SI]
 		ADD		SI,1			; 给SI加1
@@ -93,7 +92,6 @@ putloop:
 		MOV		BX,15			; 指定字符颜色
 		INT		0x10			; 调用显卡BIOS
 		JMP		putloop
-
 fin:
 		HLT						; 让CPU停止，等待指令
 		JMP		fin				; 无限循环
