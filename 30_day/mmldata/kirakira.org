@@ -1,0 +1,13 @@
+/* 「きらきら星」 フランス民謡  武鹿悦子作詞 */
+
+$E"SJIS";							T120L4O4
+
+$K"きらきらひかる  お空の星よ";		CCGGAAG2 FFEEDDC2
+$K"まばたきしては  みんなを見てる";	GGFFEED2 GGFFEED2
+$K"きらきらひかる  お空の星よ";		CCGGAAG2 FFEEDDC2
+$K"";								R1
+
+$K"きらきらひかる  お空の星よ";		CCGGAAG2 FFEEDDC2
+$K"みんなの歌が  届くといいな";		GGFFEED2 GGFFEED2
+$K"きらきらひかる  お空の星よ";		CCGGAAG2 FFEEDDC2
+$K"";								R1 R1

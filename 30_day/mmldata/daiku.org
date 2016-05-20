@@ -1,0 +1,17 @@
+/* uŒð‹¿‹È‘æ9”Ô ƒj’Z’² "‡¥" op.125v‚æ‚è Ludwig van Beethoven  ”öèŠì”ªìŽŒ */
+
+$E"SJIS";							T110L4
+
+									O4
+$K"°‚ê‚½‚éÂ‹ó  •Y‚¤‰_‚æ";			F+F+GA AGF+E DDEF+ F+.E8E2
+$K"¬’¹‚Í‰Ì‚¦‚è  —Ñ‚ÉX‚É";			F+F+GA AGF+E DDEF+ E.D8D2
+$K"S‚Í‘u‚â‚©  Šì‚Ñ–ž‚¿‚Ä";			EEF+D EF+8G8F+D EF+8G8F+E DE<A>
+$K"Œ©Œð‚í‚·‰ä‚ç‚Ì  –¾‚é‚«ÎŠç";		F+& F+F+GA AGF+E DDEF+ E.D8D2
+
+									O5
+$K"‰Ôç‚­‹u‚×‚É  Œe‚¦‚é—F‚æ";		F+F+GA AGF+E DDEF+ F+.E8E2
+$K"‚­•—‘u‚â‚©  ‚Ý‚È‚¬‚é—zŽË‚µ";	F+F+GA AGF+E DDEF+ E.D8D2
+$K"S‚Í‰¸‚â‚©  K‚¹ˆì‚ê";			EEF+D EF+8G8F+D EF+8G8F+E DE<A>
+$K"‹¿‚­‚Í‰ä‚ç‚Ì  Šì‚Ñ‚Ì‰Ì";			F+& F+F+GA AGF+E DDEF+ E.D8D2
+
+$K"";								R1

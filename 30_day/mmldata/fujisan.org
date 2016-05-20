@@ -1,0 +1,15 @@
+/* u•xŽmŽRv •¶•”È¥‰Ì  ŠÞ’J¬”gìŽŒ */
+
+$E"SJIS";					T120L4O4
+
+$K"‚ ‚½‚Ü‚ð‰_‚Ìã‚Éo‚µ";	G.G8AGEC8D8E2		D.G8GF8E8D2.R
+$K"Žl•û‚ÌŽR‚ðŒ©‚¨‚ë‚µ‚Ä";	G.G8ECA.B8>C<A		G.A8G8F8E8D8C2.R
+$K"‚©‚Ý‚È‚è‚³‚Ü‚ð‰º‚É•·‚­";	D.D8DDC8D8E8F8G2	A.B8>C<AG2.R
+$K"•xŽm‚Í“ú–{ˆê‚ÌŽR";		>C2<AGE.E8AG		FED.C8C2.R
+
+$K"Â‹ó‚‚­‚»‚Ñ‚¦—§‚¿";		G.G8AGEC8D8E2		D.G8GF8E8D2.R
+$K"‚©‚ç‚¾‚Éá‚Ì’…•¨’…‚Ä";	G.G8ECA.B8>C<A		G.A8G8F8E8D8C2.R
+$K"‰à‚Ì‚·‚»‚ð‰“‚­‰g‚­";		D.D8DDC8D8E8F8G2	A.B8>C<AG2.R
+$K"•xŽm‚Í“ú–{ˆê‚ÌŽR";		>C2<AGE.E8AG		FED.C8C2.R
+
+$K"";						R1R1
