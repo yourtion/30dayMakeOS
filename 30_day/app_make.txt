@@ -35,10 +35,10 @@ $(STDAPP).bim : $(APP).obj $(STDLIBPATH)stdlib.lib Makefile ../app_make.txt
 	$(OBJ2BIM) @$(RULEFILE) out:$(APP).bim map:$(APP).map stack:$(STACK) \
 		$(APP).obj $(STDLIBPATH)stdlib.lib
 
-haribote.img : ../haribote/ipl20.bin ../haribote/haribote.sys $(APP).hrb \
+haribote.img : ../haribote/ipl10.bin ../haribote/haribote.sys $(APP).hrb \
 		Makefile ../app_make.txt
 	$(EDIMG)   imgin:../../z_tools/fdimg0at.tek \
-		wbinimg src:../haribote/ipl20.bin len:512 from:0 to:0 \
+		wbinimg src:../haribote/ipl10.bin len:512 from:0 to:0 \
 		copy from:../haribote/haribote.sys to:@: \
 		copy from:$(APP).hrb to:@: \
 		copy from:../nihongo/nihongo.fnt to:@: \
