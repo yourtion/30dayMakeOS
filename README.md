@@ -24,6 +24,14 @@
 
 渡过这个痛苦的时期，第一周就该结束了。
 
+- [第1天：从计算机结构到汇编程序入门](https://github.com/yourtion/30dayMakeOS/releases/tag/Day01)
+- [第2天：汇编语言学习与Makefile入门](https://github.com/yourtion/30dayMakeOS/releases/tag/Day02)
+- [第3天：进入32位模式并导入C语言](https://github.com/yourtion/30dayMakeOS/releases/tag/Day03)
+- [第4天：C语言与画面显示的练习](https://github.com/yourtion/30dayMakeOS/releases/tag/Day04)
+- [第5天：结构体、文字显示与GDT/IDT初始化](https://github.com/yourtion/30dayMakeOS/releases/tag/Day05)
+- [第6天：分割编译与中断处理](https://github.com/yourtion/30dayMakeOS/releases/tag/Day06)
+- [第7天：FIFO与鼠标控制](https://github.com/yourtion/30dayMakeOS/releases/tag/Day07)
+
 ### 第二周（第8天～第14天）
 
 一周的苦战还是很有意义的，回头一看，我们就会发现自己还是斩获颇丰的。这时我们已经基本掌握了C语言的语法，连汇编语言的水平也能达到本书的要求了。
@@ -32,11 +40,27 @@
 
 所以这一周我们就边学习算法边慢慢地开发操作系统。不过到了这一阶段，我们就能感觉到基本上不会再受技术问题限制了。
 
+- [第8天：鼠标控制与32位模式切换](https://github.com/yourtion/30dayMakeOS/releases/tag/Day08)
+- [第9天：内存管理](https://github.com/yourtion/30dayMakeOS/releases/tag/Day09)
+- [第10天：叠加处理](https://github.com/yourtion/30dayMakeOS/releases/tag/Day10)
+- [第11天：制作窗口](https://github.com/yourtion/30dayMakeOS/releases/tag/Day11)
+- [第12天：定时器（1）](https://github.com/yourtion/30dayMakeOS/releases/tag/Day12)
+- [第13天：定时器（2）](https://github.com/yourtion/30dayMakeOS/releases/tag/Day13)
+- [第14天：高分辨率及键盘输入](https://github.com/yourtion/30dayMakeOS/releases/tag/Day14)
+
 ### 第三周（第15天～第21天）
 
 现在我们的技术已经相当厉害了，可以随心所欲地开发自己的操作系统了。首先是要支持多任务，然后是开发命令行窗口，之后就可以着手开发应用程序了。
 
 到本周结束时，就算还不够完备，我们也能拿出一个可以称之为操作系统的软件了。
+
+- [第15天：多任务（1）](https://github.com/yourtion/30dayMakeOS/releases/tag/Day15)
+- [第16天：多任务（2）](https://github.com/yourtion/30dayMakeOS/releases/tag/Day16)
+- [第17天：命令行窗口](https://github.com/yourtion/30dayMakeOS/releases/tag/Day17)
+- [第18天：dir命令](https://github.com/yourtion/30dayMakeOS/releases/tag/Day18)
+- [第19天：应用程序](https://github.com/yourtion/30dayMakeOS/releases/tag/Day19)
+- [第20天：API](https://github.com/yourtion/30dayMakeOS/releases/tag/Day20)
+- [第21天：保护操作系统](https://github.com/yourtion/30dayMakeOS/releases/tag/Day21)
 
 ### 第四周（第22天～第28天）
 
@@ -46,7 +70,18 @@
 
 对了，说起文字才想起来，正好在这个时期可以让我们的操作系统显示文字了。
 
+- [第22天：用C语言编写应用程序](https://github.com/yourtion/30dayMakeOS/releases/tag/Day22)
+- [第23天：图形处理相关](https://github.com/yourtion/30dayMakeOS/releases/tag/Day23)
+- [第24天：窗口操作](https://github.com/yourtion/30dayMakeOS/releases/tag/Day24)
+- [第25天：增加命令行窗口](https://github.com/yourtion/30dayMakeOS/releases/tag/Day25)
+- [第26天：为窗口移动提速](https://github.com/yourtion/30dayMakeOS/releases/tag/Day26)
+- [第27天：LDT与库](https://github.com/yourtion/30dayMakeOS/releases/tag/Day27)
+- [第28天：文件操作与文字显示](https://github.com/yourtion/30dayMakeOS/releases/tag/Day28)
+
+
 ### 免费赠送两天（第29天～第30天）
 
 剩下的两天用来润色加工。这两天我们来做一些之前没来得及做，但做起来既简单又有趣的内容。
 
+- [第29天：压缩与简单的应用程序](https://github.com/yourtion/30dayMakeOS/releases/tag/Day29)
+- [第30天：高级的应用程序](https://github.com/yourtion/30dayMakeOS/releases/tag/Day30)
