@@ -6,7 +6,7 @@
 ; 标准FAT12格式软盘专用的代码 Stand FAT12 format floppy code
 
 		JMP		entry
-		DB		0xeb, 0x4e, 0x90
+		DB		0x90
 		DB		"HELLOIPL"		; 启动扇区名称（8字节）
 		DW		512				; 每个扇区（sector）大小（必须512字节）
 		DB		1				; 簇（cluster）大小（必须为1个扇区）
