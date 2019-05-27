@@ -5,6 +5,7 @@
 运行方法，在 `tolset` 中新建一个 `run` 文件夹，把代码拷贝进去，然后根据系统版本运行 `!cons_**.bat`。
 
 一般都是使用 `make run` 运行代码，27天开始使用 `make run_full`。可以直接看书。
+     又或者，把tolset里的`z_tools目录` 复制到 本项目目录`30dayMakeOS`下。
 
 ## 完成效果
 
