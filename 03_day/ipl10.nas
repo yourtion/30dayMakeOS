@@ -53,7 +53,7 @@ retry:
 		MOV		BX,0
 		MOV		DL,0x00			; A驱动器
 		INT		0x13			; 调用磁盘BIOS
-		JNC		next			; 没出错则跳转到fin
+		JNC		next			; 没出错则跳转到next
 		ADD		SI,1			; 往SI加1
 		CMP		SI,5			; 比较SI与5
 		JAE		error			; SI >= 5 跳转到error
